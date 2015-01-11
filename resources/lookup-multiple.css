@@ -1,0 +1,104 @@
+*, *::before, *::after {
+  box-sizing: border-box; }
+
+:host {
+  z-index: 10;
+  border: none;
+  outline: none;
+  position: relative;
+  display: inline-block;
+  width: 200px; 
+  font-size: 13px; 
+  font-family: 'Helvetica Neue', Helvetica; }
+
+  text-field {
+    border-radius: 3px;
+    background: rgb(250,250,250);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.075);
+    border: 1px solid #ccc;
+    padding: 3px; 
+    padding-bottom: 0;
+    width: 100%;
+    cursor: text;
+    display: block; }
+
+  :host(.is-active) text-field {
+    border-color: #51a7e8;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.075),0 0 5px rgba(81,167,232,0.5)}
+
+    text-input {
+      min-width: 1px;
+      line-height: 23px;
+      margin-bottom: 3px;
+      display: inline-block;
+      outline: none; }
+
+    selected-tag {
+      background-color: #e4eef7;
+      color: #4183c4;
+      display: inline-block;
+      border-radius: 3px;
+      margin-right: 3px;
+      margin-bottom: 3px;
+      font-size: 12px;
+      padding: 3px;
+      position: relative;
+      padding-right: 16px; }
+
+      remove-tag {
+        position: absolute;
+        opacity: 0.3;
+        font-size: 14px;
+        right: 0;
+        top: 0px;
+        width: 16px;
+        text-align: center;
+        line-height: 20px;
+        cursor: pointer;
+        height: 21px; }
+
+        remove-tag::after {
+          content: '×'; }
+
+  drop-down {
+    border-radius: 3px;
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 100ms;
+    width: 100%;
+    background: rgb(250,250,250);
+    border: 1px solid #51a7e8;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.075),0 0 5px rgba(81,167,232,0.5);
+    overflow: auto;
+    margin-top: -1px;
+    list-style: none; 
+    max-height: 200px;
+    overflow: auto; 
+    left: 0;
+    z-index: 10;}
+
+  :host(.is-active) drop-down {
+    opacity: 1;
+    pointer-events: all; }
+
+    drop-down::-webkit-scrollbar {
+      }
+ 
+    drop-down li {
+      text-align: left;
+      color: black;
+      cursor: pointer;
+      padding: 3px; 
+      transition: 100ms; }
+
+    drop-down li:hover {
+      color: #fff;
+      background-color: #4183c4; }
+
+    drop-down .is-selected {
+      background-color: #e4eef7;
+      color: #4183c4; }
+
+      h-l {
+        text-decoration: underline; }

@@ -1,0 +1,8 @@
+html
+  head
+    script(src="/d3/d3.js")
+  body
+    input(data='test-data', is="lookup-multiple")
+    script.
+      var o = document.currentScript.previousElementSibling.state = {}
+      o.value = function(d){ return d.firstname + ' ' + d.lastname }

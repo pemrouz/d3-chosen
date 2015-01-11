@@ -1,0 +1,20 @@
+{
+  "name": "d3-chosen",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "d3": "^3.5.3",
+    "ripple": "pemrouz/ripple"
+  },
+  "devDependencies": {
+    "express": "^4.10.6",
+    "jade": "^1.8.2",
+    "serve-static": "^1.7.1"
+  }
+}
