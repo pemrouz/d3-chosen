@@ -21,7 +21,7 @@ module.exports = function(data){
     , dropdown  = once(self, 'drop-down')
     , tags      = once(textfield, 'selected-tag', selected, 'text-input')
         .text(value) 
-    , close     = once(tags, 'remove-tag', inherit)
+    , close     = once(tags, 'remove-tag', inherit(1))
         .on('click', removeTag)
     , input     = once(textfield, 'text-input')
         .text(query)
@@ -105,8 +105,8 @@ module.exports = function(data){
   }
 
   function highlight() {
-    match = shift(arguments) 
-    matches = slice(arguments, 0, -2)
+    var match = shift(arguments) 
+      , matches = slice(arguments, 0, -2)
 
     match = match
       .split('')
