@@ -1,7 +1,7 @@
 var app    = require('express')()
   , static = require('serve-static')(__dirname+'/../node_modules/')
   , server = require('http').createServer(app)
-  , ripple = require('ripple')(server, app)
+  , ripple = require('ripple')(server, app, { client: false })
   , lookup = require('../')
   
 ripple

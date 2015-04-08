@@ -9,8 +9,8 @@ module.exports = function(data){
     , regex    = state.regex    = state.regex     || /().*?/i
     , selected = state.selected = state.selected  || []
 
-  if (isNull(attr(host, 'css'))) return attr(host, 'css','lookup-multiple.css')
-  if (isNull(attr(host, 'tabindex'))) return attr(host, 'tabindex', '-1')
+  if (is.null(attr(host, 'css'))) return attr(host, 'css','lookup-multiple.css')
+  if (is.null(attr(host, 'tabindex'))) return attr(host, 'tabindex', '-1')
 
   var self = d3.select(root)
         .on('click', focusTextInput)
@@ -60,7 +60,7 @@ module.exports = function(data){
     && !root.getSelection().extentOffset
     &&  d3.event.which == 8
     &&  state.selected.pop()
-    &&  ripple(host)
+    &&  ripple.draw(host)
   }
 
   function isSelected(d) {
@@ -85,13 +85,13 @@ module.exports = function(data){
     && selected.push(d)
     && (host.value = selected.map(key))
     && (query = '', 1)
-    && ripple(host)
+    && ripple.draw(host)
   }
 
   function removeTag(d) {
     var i = selected.indexOf(d)
     selected.splice(i, 1)
-    ripple(host)
+    ripple.draw(host)
   }
 
   function sort(a, b) {
