@@ -1,19 +1,12 @@
-var ripple = require('ripple')()
-  , fs     = require('fs')
+var file = require('utilise.file')
 
-ripple
-  .resource(
-      'lookup-multiple'
-    , require('./resources/lookup-multiple')
-    , { extends: 'input' }
-    )
-  .resource(
-      'lookup-multiple.css'
-    , file('./lookup-multiple.css')
-    )
-
-module.exports = ripple
-
-function file(name){
-  return fs.readFileSync(__dirname + '/resources/'+name, { encoding:'utf8' })
-}
+module.exports = [
+  { 
+    name: 'lookup-multiple'
+  , body: require('./resources/lookup-multiple')
+  }
+, { 
+    name: 'lookup-multiple.css'
+  , body: file(__dirname + '/resources/lookup-multiple.css')
+  }
+]

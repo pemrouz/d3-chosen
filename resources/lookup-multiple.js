@@ -1,48 +1,55 @@
-module.exports = function(data){ 
+module.exports = function lookupMultiple(data){ 
   var root     = this
-    , host     = this.host
-    , state    = host.state || {}
-    , value    = state.value    = state.value     || defaultValue
-    , key      = state.key      = state.key       || defaultKey
+    , self     = sel(this)
+    , host     = sel(this.host)
+    , state    = this.host.state || {}
+    , value    = state.value    = state.value     || str
+    , id       = state.id       = state.id        || key('id')
     , match    = state.match    = state.match     || defaultMatch
     , query    = state.query    = state.query     || ''
     , regex    = state.regex    = state.regex     || /().*?/i
     , selected = state.selected = state.selected  || []
+    , o        = once(self)
 
   if (is.null(attr(host, 'css'))) return attr(host, 'css','lookup-multiple.css')
   if (is.null(attr(host, 'tabindex'))) return attr(host, 'tabindex', '-1')
 
-  var self = d3.select(root)
-        .on('click', focusTextInput)
-    , parent = d3.select(host)
-        .on('focus', focus)
-        .on('blur', blur)
-    , textfield = once(self, 'text-field')
-    , dropdown  = once(self, 'drop-down')
-    , tags      = once(textfield, 'selected-tag', selected, 'text-input')
-        .text(value) 
-    , close     = once(tags, 'remove-tag', inherit(1))
-        .on('click', removeTag)
-    , input     = once(textfield, 'text-input')
+  self
+    .on('click', focusTextInput)
+
+  host
+    .on('focus', focus)
+    .on('blur', blur)
+
+  o('text-field', 1)
+    ('selected-tag', selected, null, 'text-input')
+      .text(value) 
+
+    o('text-field')
+      ('tags', 1)
+        ('remove-tag', inherit)
+          .on('click', removeTag)
+  
+    o('text-field')
+      ('text-input', 1)
         .text(query)
         .attr('contenteditable', 'true')
         .on('keydown', backspaceLozenge)
         .on('keyup', updateQuery)
-    , options   = once(dropdown, 'li', data.filter(match).sort(sort))
-        .html(fuzzy)
-        .classed('is-selected', isSelected)
-        .on('click', selectOption)
 
-  function defaultValue(d) {
-    return d
-  }
+  o('drop-down', 1)
+    ('li', (data || []).filter(match).sort(sort)) // TODO az this
+      .html(fuzzy)
+      .classed('is-selected', is.in(selected))
+      .on('click', selectOption)
 
   function defaultMatch(d, i) {
     return value(d).match
-        && value(d).match(state.regex)
+         ? value(d).match(state.regex)
+         : true
   }
 
-  function updateQuery(d) {
+  function updateQuery(d) { console.log('updateQuery')
     state.query = this.textContent 
     state.regex = new RegExp(
           '(' 
@@ -53,6 +60,8 @@ module.exports = function(data){
         + ').*?'
       , 'i'
       )
+    
+    ripple.draw(host)
   }
 
   function backspaceLozenge(d) {
@@ -63,27 +72,23 @@ module.exports = function(data){
     &&  ripple.draw(host)
   }
 
-  function isSelected(d) {
-    return ~selected.indexOf(d)
-  }
-
   function focusTextInput(d) {
-    input.node().focus()
+    raw('text-field', root).focus()
   }
 
   function focus(d) {
-    host.classList.add('is-active')
+    host.classed('is-active', true)
   }
   
   function blur(d) {
-       document.activeElement != host
-    && host.classList.remove('is-active')
+       document.activeElement != host.node()
+    && host.classed('is-active', false)
   }
 
   function selectOption(d) {
-      !isSelected(d)
+      !is.in(selected)(d)
     && selected.push(d)
-    && (host.value = selected.map(key))
+    && (host.value = selected.map(id))
     && (query = '', 1)
     && ripple.draw(host)
   }
@@ -120,8 +125,12 @@ module.exports = function(data){
     return match
   }
 
-  function defaultKey(d) {
-    return d.id || d
-  }
-  
+  // TODO utilise these
+  function shift(d) {
+    return Array.prototype.shift.apply(d)
+  } 
+
+  function slice(d) {
+    return Array.prototype.slice.apply(d, (shift(arguments), arguments))
+  } 
 } 

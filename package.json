@@ -1,20 +1,22 @@
 {
   "name": "d3-chosen",
   "version": "0.0.0",
-  "description": "",
   "main": "index.js",
+  "author": "Pedram Emrouznejad (https://github.com/pemrouz)",
+  "license": "pemrouz.mit-license.org",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "popper"
   },
   "author": "",
-  "license": "ISC",
   "dependencies": {
-    "d3": "^3.5.3",
-    "ripple": "pemrouz/ripple"
+    "rijs": "*",
+    "utilise.file": "*"
   },
   "devDependencies": {
-    "express": "^4.10.6",
-    "jade": "^1.8.2",
-    "serve-static": "^1.7.1"
+    "d3": "^3.5.3",
+    "browserify": "^11.0.1",
+    "popper": "*",
+    "uglify-js": "^2.4.24",
+    "utilise.filify": "*"
   }
 }
