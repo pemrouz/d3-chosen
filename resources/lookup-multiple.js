@@ -24,11 +24,8 @@ module.exports = function lookupMultiple(data){
   o('text-field', 1)
     ('selected-tag', selected, null, 'text-input')
       .text(value) 
-
-    o('text-field')
-      ('tags', 1)
-        ('remove-tag', inherit)
-          .on('click', removeTag)
+      ('remove-tag', inherit)
+        .on('click', removeTag)
   
     o('text-field')
       ('text-input', 1)
@@ -49,7 +46,7 @@ module.exports = function lookupMultiple(data){
          : true
   }
 
-  function updateQuery(d) { console.log('updateQuery')
+  function updateQuery(d) {
     state.query = this.textContent 
     state.regex = new RegExp(
           '(' 
@@ -88,7 +85,7 @@ module.exports = function lookupMultiple(data){
   function selectOption(d) {
       !is.in(selected)(d)
     && selected.push(d)
-    && (host.value = selected.map(id))
+    && (host.node().value = selected.map(id))
     && (query = '', 1)
     && ripple.draw(host)
   }

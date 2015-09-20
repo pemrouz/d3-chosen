@@ -20,6 +20,7 @@
     padding-bottom: 0;
     width: 100%;
     cursor: text;
+    text-align: left;
     display: block; }
 
   :host(.is-active) text-field {
@@ -31,6 +32,7 @@
       line-height: 23px;
       margin-bottom: 3px;
       display: inline-block;
+      color: black;
       outline: none; }
 
     selected-tag {

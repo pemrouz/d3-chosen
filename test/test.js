@@ -2,8 +2,8 @@ delete localStorage.ripple
 var expect = window.chai.expect
   , container = document.createElement('div')
   , ripple = (require('rijs'), window.ripple)
-  , chosen = require('./')
-  , data = require('./test/data.json')
+  , chosen = require('../')
+  , data = require('./data.json')
   , el
 
 describe('D3 Chosen', function(){
