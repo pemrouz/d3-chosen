@@ -84,9 +84,6 @@
     opacity: 1;
     pointer-events: all; }
 
-    drop-down::-webkit-scrollbar {
-      }
- 
     drop-down li {
       text-align: left;
       color: black;

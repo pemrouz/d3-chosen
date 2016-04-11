@@ -1,22 +1,33 @@
 {
   "name": "d3-chosen",
   "version": "0.0.0",
-  "main": "index.js",
+  "main": "dist",
   "author": "Pedram Emrouznejad (https://github.com/pemrouz)",
   "license": "pemrouz.mit-license.org",
-  "scripts": {
-    "test": "popper"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pemrouz/d3-chosen.git"
   },
-  "author": "",
-  "dependencies": {
-    "rijs": "*",
-    "utilise.file": "*"
+  "scripts": {
+    "babel": "babel src -d dist --copy-files",
+    "clean": "rm -rf dist && mkdir dist",
+    "export": "sh -c 'rijs.export dist'",
+    "build": "npm run clean && npm run babel && npm run export",
+    "test": "popper",
+    "version": "npm run build && git add -A",
+    "postversion": "git push && git push --tags"
   },
   "devDependencies": {
-    "d3": "^3.5.3",
-    "browserify": "^11.0.1",
+    "babel-cli": "*",
+    "babel-preset-es2015": "*",
+    "babelify": "*",
     "popper": "*",
-    "uglify-js": "^2.4.24",
-    "utilise.filify": "*"
+    "browserify": "*",
+    "browserenv": "*",
+    "tape": "*",
+    "utilise": "*",
+    "cssscope": "*",
+    "utilise.filify": "*",
+    "rijs.export": "*"
   }
 }
