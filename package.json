@@ -9,10 +9,11 @@
     "url": "git+https://github.com/pemrouz/d3-chosen.git"
   },
   "scripts": {
+    "bundle": "browserify dist/index.js > dist/client.js -s chosen",
     "babel": "babel src -d dist --copy-files",
     "clean": "rm -rf dist && mkdir dist",
     "export": "sh -c 'rijs.export dist'",
-    "build": "npm run clean && npm run babel && npm run export",
+    "build": "npm run clean && npm run babel && npm run export && npm run bundle",
     "test": "popper",
     "version": "npm run build && git add -A",
     "postversion": "git push && git push --tags"

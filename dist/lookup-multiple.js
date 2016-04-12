@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = lookupMultiple;
 function lookupMultiple(state) {
   var o = once(this),
+      host = this.host || this,
       value = defaults(state, 'value', str),
       id = defaults(state, 'id', function (d) {
     return d.id;
@@ -52,7 +53,7 @@ function lookupMultiple(state) {
   }
 
   function blur(d) {
-    if (!focused) return;
+    if (!focused || window.event.relatedTarget == host) return;
     state.focused = false;
     o.draw();
   }
