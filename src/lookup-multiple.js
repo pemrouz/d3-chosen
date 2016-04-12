@@ -1,5 +1,6 @@
 export default function lookupMultiple(state){ 
   var o        = once(this)
+    , host     = this.host || this
     , value    = defaults(state, 'value'   , str)
     , id       = defaults(state, 'id'      , d => d.id)
     , match    = defaults(state, 'match'   , defaultMatch)
@@ -75,7 +76,7 @@ export default function lookupMultiple(state){
   }
   
   function blur(d) {
-    if (!focused) return
+    if (!focused || window.event.relatedTarget == host) return
     state.focused = false
     o.draw()
   }
