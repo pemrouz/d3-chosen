@@ -3,7 +3,7 @@ import 'browserenv'
 import test from 'tape'
 import scope from 'cssscope'
 import lookup from './lookup-multiple'
-import options from '../data.json'
+import options from '../../../data.json'
 
 const style = window.getComputedStyle
     , o = once(document.body)('.container', 1)
@@ -11,7 +11,7 @@ const style = window.getComputedStyle
 
 once(document.head)
   ('style', 1)
-    .html(scope(file('dist/lookup-multiple.css'), 'lookup-multiple'))
+    .html(scope(file(__dirname + '/lookup-multiple.css'), 'lookup-multiple'))
 
 test('basic output', t => {
   t.plan(1)
@@ -21,12 +21,12 @@ test('basic output', t => {
 
   t.equal(lo(host.outerHTML), stripws`
     <lookup-multiple tabindex="-1">
-      <text-field>
-        <text-input contenteditable="true"></text-input>
-      </text-field>
-      <drop-down>
+      <div class="textfield">
+        <div class="textinput" contenteditable="true"></div>
+      </div>
+      <div class="dropdown">
         <li>foo</li>
-      </drop-down>
+      </div>
     </lookup-multiple>
   `, 'basic structure')
 
@@ -36,34 +36,40 @@ test('basic output', t => {
 test('search and select option', t => {
   const state = { options: ['foo', 'bar'] }
       , host  = tdraw(o('lookup-multiple', 1), lookup, state)
-      , input = host('text-input')
+      , input = host('.textinput')
 
+  // focus host
   time(  0, d => 
     host.emit('focus'))
 
+  // check input focused, then enter text
   time( 50, d => {
     t.equal(state.focused, true, 'focused')
-    t.equal(document.activeElement, input.node(), 'refocus input') 
+    t.equal(document.activeElement, input.node(), 'refocus input')
 
     input
       .text('br')
       .emit('keyup')
     })
   
+  // check fuzzy highlight, then click option
   time(200, d => {
     const option = host('li') 
-    t.equal(option.html(), '<h-l>b</h-l>a<h-l>r</h-l>', 'fuzzy match') 
+    t.equal(option.html(), '<span>b</span>a<span>r</span>', 'fuzzy match') 
 
     option
-      .emit('click') })
+      .emit('click') 
+  })
 
+  // check selected, then blur
   time(300, d => {
-    t.deepEqual(state.selected, ['bar'], 'state selected')
-    t.equal(host('selected-tag').size(), 1, 'add one selected tag')
-    t.equal(host('selected-tag').text(), 'bar', 'with correct text') 
+    t.deepEqual(state.value, ['bar'], 'state value')
+    t.equal(host('.selected-tag').size(), 1, 'add one selected tag')
+    t.equal(host('.selected-tag').text(), 'bar', 'with correct text') 
 
     document.activeElement.blur() })
 
+  // check unfocused
   time(400, d => {
     t.equal(state.focused, false, 'focus false') })
 

@@ -9,9 +9,10 @@
   display: inline-block;
   width: 200px; 
   font-size: 13px; 
-  font-family: 'Helvetica Neue', Helvetica; }
+  font-family: inherit; }
 
-  text-field {
+  .textfield {
+    min-height: inherit;
     border-radius: 3px;
     background: rgb(250,250,250);
     box-shadow: inset 0 1px 2px rgba(0,0,0,0.075);
@@ -23,19 +24,22 @@
     text-align: left;
     display: block; }
 
-  :host(.is-active) text-field {
+  :host(.is-active) > .textfield {
     border-color: #51a7e8;
     box-shadow: inset 0 1px 2px rgba(0,0,0,0.075),0 0 5px rgba(81,167,232,0.5)}
 
-    text-input {
-      min-width: 1px;
-      line-height: 23px;
-      margin-bottom: 3px;
+    .textinput {
+      min-height: 0.5em;
+      vertical-align: top;
+      min-width: 10px;
+      max-width: 100%;
+      line-height: 1em;
+      padding: 3px;
       display: inline-block;
       color: black;
       outline: none; }
 
-    selected-tag {
+    .selected-tag {
       background-color: #e4eef7;
       color: #4183c4;
       display: inline-block;
@@ -47,7 +51,7 @@
       position: relative;
       padding-right: 16px; }
 
-      remove-tag {
+      .remove-tag {
         position: absolute;
         opacity: 0.3;
         font-size: 14px;
@@ -59,10 +63,10 @@
         cursor: pointer;
         height: 21px; }
 
-        remove-tag::after {
+        .remove-tag::after {
           content: '×'; }
 
-  drop-down {
+  .dropdown {
     border-radius: 3px;
     position: absolute;
     opacity: 0;
@@ -80,24 +84,24 @@
     left: 0;
     z-index: 10;}
 
-  :host(.is-active) drop-down {
+  :host(.is-active) > .dropdown {
     opacity: 1;
     pointer-events: all; }
 
-    drop-down li {
+    .dropdown > li {
       text-align: left;
       color: black;
       cursor: pointer;
       padding: 3px; 
       transition: 100ms; }
 
-    drop-down li:hover {
-      color: #fff;
-      background-color: #4183c4; }
-
-    drop-down .is-selected {
+    .dropdown > .is-selected {
       background-color: #e4eef7;
       color: #4183c4; }
 
-      h-l {
+    .dropdown > .is-suggestion {
+      color: #fff;
+      background-color: #4183c4; }
+
+      .dropdown > li > span {
         text-decoration: underline; }

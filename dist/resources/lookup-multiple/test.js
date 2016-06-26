@@ -1,6 +1,6 @@
 'use strict';
 
-var _templateObject = _taggedTemplateLiteral(['\n    <lookup-multiple tabindex="-1">\n      <text-field>\n        <text-input contenteditable="true"></text-input>\n      </text-field>\n      <drop-down>\n        <li>foo</li>\n      </drop-down>\n    </lookup-multiple>\n  '], ['\n    <lookup-multiple tabindex="-1">\n      <text-field>\n        <text-input contenteditable="true"></text-input>\n      </text-field>\n      <drop-down>\n        <li>foo</li>\n      </drop-down>\n    </lookup-multiple>\n  ']);
+var _templateObject = _taggedTemplateLiteral(['\n    <lookup-multiple tabindex="-1">\n      <div class="textfield">\n        <div class="textinput" contenteditable="true"></div>\n      </div>\n      <div class="dropdown">\n        <li>foo</li>\n      </div>\n    </lookup-multiple>\n  '], ['\n    <lookup-multiple tabindex="-1">\n      <div class="textfield">\n        <div class="textinput" contenteditable="true"></div>\n      </div>\n      <div class="dropdown">\n        <li>foo</li>\n      </div>\n    </lookup-multiple>\n  ']);
 
 require('utilise');
 
@@ -18,7 +18,7 @@ var _lookupMultiple = require('./lookup-multiple');
 
 var _lookupMultiple2 = _interopRequireDefault(_lookupMultiple);
 
-var _data = require('../data.json');
+var _data = require('../../../data.json');
 
 var _data2 = _interopRequireDefault(_data);
 
@@ -32,7 +32,7 @@ var style = window.getComputedStyle,
   return d.firstname + ' ' + d.lastname;
 };
 
-once(document.head)('style', 1).html((0, _cssscope2.default)(file('dist/lookup-multiple.css'), 'lookup-multiple'));
+once(document.head)('style', 1).html((0, _cssscope2.default)(file(__dirname + '/lookup-multiple.css'), 'lookup-multiple'));
 
 (0, _tape2.default)('basic output', function (t) {
   t.plan(1);
@@ -48,12 +48,14 @@ once(document.head)('style', 1).html((0, _cssscope2.default)(file('dist/lookup-m
 (0, _tape2.default)('search and select option', function (t) {
   var state = { options: ['foo', 'bar'] },
       host = tdraw(o('lookup-multiple', 1), _lookupMultiple2.default, state),
-      input = host('text-input');
+      input = host('.textinput');
 
+  // focus host
   time(0, function (d) {
     return host.emit('focus');
   });
 
+  // check input focused, then enter text
   time(50, function (d) {
     t.equal(state.focused, true, 'focused');
     t.equal(document.activeElement, input.node(), 'refocus input');
@@ -61,21 +63,24 @@ once(document.head)('style', 1).html((0, _cssscope2.default)(file('dist/lookup-m
     input.text('br').emit('keyup');
   });
 
+  // check fuzzy highlight, then click option
   time(200, function (d) {
     var option = host('li');
-    t.equal(option.html(), '<h-l>b</h-l>a<h-l>r</h-l>', 'fuzzy match');
+    t.equal(option.html(), '<span>b</span>a<span>r</span>', 'fuzzy match');
 
     option.emit('click');
   });
 
+  // check selected, then blur
   time(300, function (d) {
-    t.deepEqual(state.selected, ['bar'], 'state selected');
-    t.equal(host('selected-tag').size(), 1, 'add one selected tag');
-    t.equal(host('selected-tag').text(), 'bar', 'with correct text');
+    t.deepEqual(state.value, ['bar'], 'state value');
+    t.equal(host('.selected-tag').size(), 1, 'add one selected tag');
+    t.equal(host('.selected-tag').text(), 'bar', 'with correct text');
 
     document.activeElement.blur();
   });
 
+  // check unfocused
   time(400, function (d) {
     t.equal(state.focused, false, 'focus false');
   });
