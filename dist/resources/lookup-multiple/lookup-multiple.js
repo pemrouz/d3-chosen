@@ -39,7 +39,7 @@ function lookupMultiple(state) {
     return val(d).match ? val(d).match(state.regex) : true;
   }
 
-  function updateQuery(e) {
+  function updateQuery(d, i, el, e) {
     if (state.query == this.textContent) return;
     state.query = this.textContent;
     updateRegex();
@@ -50,7 +50,7 @@ function lookupMultiple(state) {
     state.regex = new RegExp('(' + state.query.replace(/\W+/, '').split('').join(').*?(') + ').*?', 'i');
   }
 
-  function backspaceLozenge(e) {
+  function backspaceLozenge(d, i, el, e) {
     var _dos$getSelection = dos.getSelection();
 
     var anchorOffset = _dos$getSelection.anchorOffset;
@@ -83,7 +83,7 @@ function lookupMultiple(state) {
     o.draw();
   }
 
-  function blur(e) {
+  function blur(d, i, el, e) {
     if (!focused || e.relatedTarget == host) return refocus();
     state.focused = false;
     o.draw();
@@ -112,7 +112,7 @@ function lookupMultiple(state) {
     return val(d).replace(state.regex, highlight);
   }
 
-  function shortcuts(e) {
+  function shortcuts(d, i, el, e) {
     var len = state.visible.length;
     switch (e.key) {
       case 'Down':

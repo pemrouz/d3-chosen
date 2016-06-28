@@ -48,7 +48,7 @@ export default function lookupMultiple(state){
          : true
   }
 
-  function updateQuery(e) {
+  function updateQuery(d, i, el, e) {
     if (state.query == this.textContent) return
     state.query = this.textContent 
     updateRegex()
@@ -67,7 +67,7 @@ export default function lookupMultiple(state){
     )
   }
 
-  function backspaceLozenge(e) {
+  function backspaceLozenge(d, i, el, e) {
     const { anchorOffset, focusOffset, anchorNode, focusNode } = dos.getSelection()
     if (e.key == 'Backspace'
     && ((!anchorOffset && !focusOffset) || 
@@ -95,7 +95,7 @@ export default function lookupMultiple(state){
     o.draw()
   }
   
-  function blur(e) {
+  function blur(d, i, el, e) {
     if (!focused || e.relatedTarget == host) return refocus()
     state.focused = false
     o.draw()
@@ -126,7 +126,7 @@ export default function lookupMultiple(state){
     return val(d).replace(state.regex, highlight)
   }
 
-  function shortcuts(e) {
+  function shortcuts(d, i, el, e) {
     const len = state.visible.length
     switch(e.key) {
       case 'Down':
