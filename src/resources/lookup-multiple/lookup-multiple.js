@@ -3,7 +3,6 @@ export default function lookupMultiple(state){
     , host       = this.host || this
     , dos        = o.node().getSelection ? o.node() : window
     , val        = defaults(state, 'val'       , str)
-    , id         = defaults(state, 'id'        , d => d.id)
     , value      = defaults(state, 'value'     , [])
     , match      = defaults(state, 'match'     , defaultMatch)
     , query      = defaults(state, 'query'     , '')
