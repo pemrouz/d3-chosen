@@ -27,7 +27,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 var style = window.getComputedStyle,
-    o = once(document.body)('.container', 1),
+    o = once(document.body)('.container', 1, null, ':first-child'),
     fullname = function fullname(d) {
   return d.firstname + ' ' + d.lastname;
 };
@@ -46,47 +46,87 @@ once(document.head)('style', 1).html((0, _cssscope2.default)(file(__dirname + '/
 });
 
 (0, _tape2.default)('search and select option', function (t) {
+  t.plan(7);
   var state = { options: ['foo', 'bar'] },
       host = tdraw(o('lookup-multiple', 1), _lookupMultiple2.default, state),
       input = host('.textinput');
 
   // focus host
-  time(0, function (d) {
-    return host.emit('focus');
-  });
+  host.emit('focus');
 
-  // check input focused, then enter text
-  time(50, function (d) {
-    t.equal(state.focused, true, 'focused');
-    t.equal(document.activeElement, input.node(), 'refocus input');
+  // check input focused
+  t.equal(state.focused, true, 'focused');
+  t.equal(document.activeElement, input.node(), 'refocus input');
 
-    input.text('br').emit('keyup');
-  });
+  // enter text
+  input.text('br').emit('keyup');
 
-  // check fuzzy highlight, then click option
-  time(200, function (d) {
-    var option = host('li');
-    t.equal(option.html(), '<span>b</span>a<span>r</span>', 'fuzzy match');
+  // check fuzzy highlight
+  var option = host('li');
+  t.equal(option.html(), '<span>b</span>a<span>r</span>', 'fuzzy match');
 
-    option.emit('click');
-  });
+  // click option
+  option.emit('click');
 
-  // check selected, then blur
-  time(300, function (d) {
-    t.deepEqual(state.value, ['bar'], 'state value');
-    t.equal(host('.selected-tag').size(), 1, 'add one selected tag');
-    t.equal(host('.selected-tag').text(), 'bar', 'with correct text');
+  // check selected
+  t.deepEqual(state.value, ['bar'], 'state value');
+  t.equal(host('.selected-tag').size(), 1, 'add one selected tag');
+  t.equal(host('.selected-tag').text(), 'bar', 'with correct text');
 
-    document.activeElement.blur();
-  });
+  // blur
+  document.activeElement.blur();
 
   // check unfocused
-  time(400, function (d) {
-    t.equal(state.focused, false, 'focus false');
+  t.equal(state.focused, false, 'focus false');
+
+  o.html('');
+});
+
+(0, _tape2.default)('reset suggestion option on input', function (t) {
+  t.plan(1);
+  var state = { options: ['foo', 'bar'], focused: true, suggestion: 1 },
+      host = tdraw(o('lookup-multiple', 1), _lookupMultiple2.default, state),
+      input = host('.textinput');
+
+  input.text('f').emit('keyup');
+
+  t.equal(state.suggestion, 0, 'reset suggestion option on input');
+  o.html('');
+  t.end();
+});
+
+(0, _tape2.default)('should emit deselect and change event on backspace', function (t) {
+  t.plan(2);
+  var state = { options: ['foo', 'bar'], value: ['foo'] },
+      host = tdraw(o('lookup-multiple', 1), _lookupMultiple2.default, state),
+      input = host('.textinput');
+
+  host.on('deselect', function (d, i, el, e) {
+    return t.equal(e.detail, 'foo');
+  }).on('change', function (d, i, el, e) {
+    return t.ok(true, 'change');
   });
 
-  time(500, function (d) {
-    o.html('');
-    t.end();
+  input.emit(extend(new CustomEvent('keydown'))({ key: 'Backspace' }));
+
+  o.html('');
+});
+
+(0, _tape2.default)('should emit deselect, select and change event on click', function (t) {
+  t.plan(4);
+  var state = { options: ['foo', 'bar'], value: [], focused: true },
+      host = tdraw(o('lookup-multiple', 1), _lookupMultiple2.default, state),
+      option = host('li:last-child');
+
+  host.on('deselect', function (d, i, el, e) {
+    return t.equal(e.detail, 'foo', 'deselect');
+  }).on('select', function (d, i, el, e) {
+    return t.equal(e.detail, 'foo', 'select');
+  }).on('change', function (d, i, el, e) {
+    return t.ok(true, 'change');
   });
+
+  option.emit('click').emit('click');
+
+  o.html('');
 });
