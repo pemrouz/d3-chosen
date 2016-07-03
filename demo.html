@@ -1,0 +1,35 @@
+<body></body>
+<script src="https://rawgithub.com/rijs/minimal/master/dist/ripple.min.js"></script>
+<script src="dist/client.js" charset="utf-8"></script>
+<script>
+  var options = [
+        { firstname: 'John', lastname: 'Smith' }
+      , { firstname: 'Jane', lastname: 'Smith' }
+      , { firstname: 'Jack', lastname: 'Smith' }
+      ]
+
+  // using once
+  var o = once(document.body)
+  o('lookup-multiple', { options: options, val: val })
+    // .on('change', (d, i, el, e) => {})
+
+
+  // no helpers
+  /*
+  var lookup = document.createElement('lookup-multiple')
+  document.body.appendChild(lookup)
+  lookup.state = { 
+    options: [
+      { firstname: 'John', lastname: 'Smith' }
+    , { firstname: 'Jane', lastname: 'Smith' }
+    , { firstname: 'Jack', lastname: 'Smith' }
+    ]
+  , val: d => d.firstname + ' ' + d.lastname
+  }
+  lookup.draw()
+  */
+  
+  function val(d) {
+    return d.firstname + ' ' + d.lastname
+  }
+</script>
