@@ -36,7 +36,7 @@ export default function lookupMultiple(state){
     ('li', state.visible = options.filter(match).sort(az(val)))
       .classed('is-suggestion', (d, i) => isFinite(suggestion) && i == suggestion)
       .classed('is-selected', is.in(value))
-      .on('click.select', th(el => e => toggleOption(datum(el))))
+      .on('click.select', toggleOption)
       .on('mouseover.suggestion', changeSuggestion)
       .html(state.renderer)
       .each(scrollIntoViewIfNeeded)
@@ -110,13 +110,13 @@ export default function lookupMultiple(state){
     o.draw()
   }
 
-  function changeSuggestion() {
-    state.suggestion = state.visible.indexOf(datum(this))
+  function changeSuggestion(d) {
+    state.suggestion = state.visible.indexOf(d)
     o.draw()
   }
 
-  function removeTag() {
-    var i = value.indexOf(datum(this))
+  function removeTag(d) {
+    var i = value.indexOf(d)
     value.splice(i, 1)
     o.draw()
   }
