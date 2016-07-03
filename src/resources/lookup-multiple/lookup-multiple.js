@@ -1,7 +1,7 @@
 export default function lookupMultiple(state){ 
   var o          = once(this)
     , host       = this.host || this
-    , dos        = o.node().getSelection ? o.node() : window
+    , root       = o.node().getSelection ? o.node() : window
     , val        = defaults(state, 'val'       , str)
     , value      = defaults(state, 'value'     , [])
     , match      = defaults(state, 'match'     , defaultMatch)
@@ -67,7 +67,7 @@ export default function lookupMultiple(state){
   }
 
   function backspaceLozenge(d, i, el, e) {
-    const { anchorOffset, focusOffset, anchorNode, focusNode } = dos.getSelection()
+    const { anchorOffset, focusOffset, anchorNode, focusNode } = root.getSelection()
     if (e.key == 'Backspace'
     && ((!anchorOffset && !focusOffset) || 
         (anchorOffset == 1 && focusOffset == 1 && !query))) { // firefox 48 bug
@@ -79,7 +79,7 @@ export default function lookupMultiple(state){
   function refocus() {
     const input = o('.textinput').node()
         , range = document.createRange()
-        , sel = dos.getSelection()
+        , sel = root.getSelection()
 
     input.focus()
     range.selectNodeContents(input)
