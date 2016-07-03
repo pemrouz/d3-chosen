@@ -47,9 +47,10 @@ export default function lookupMultiple(state){
          : true
   }
 
-  function updateQuery(d, i, el, e) {
-    if (state.query == this.textContent) return
-    state.query = this.textContent 
+  function updateQuery(d, i, el) {
+    if (state.query == el.textContent) return
+    state.query = el.textContent 
+    state.suggestion = 0
     updateRegex()
     o.draw()
   }

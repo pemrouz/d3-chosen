@@ -78,3 +78,16 @@ test('search and select option', t => {
     t.end() })
 })
 
+test('reset suggestion option on input', t => {
+  const state = { options: ['foo', 'bar'], focused: true, suggestion: 1 }
+      , host  = tdraw(o('lookup-multiple', 1), lookup, state)
+      , input = host('.textinput')
+
+  input
+    .text('f')
+    .emit('keyup')
+  
+  t.equal(state.suggestion, 0, 'reset suggestion option on input')
+  t.end()
+})
+
