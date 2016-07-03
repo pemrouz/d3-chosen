@@ -6,7 +6,7 @@ import lookup from './lookup-multiple'
 import options from '../../../data.json'
 
 const style = window.getComputedStyle
-    , o = once(document.body)('.container', 1)
+    , o = once(document.body)('.container', 1, null, ':first-child')
     , fullname = d => d.firstname + ' ' + d.lastname 
 
 once(document.head)
@@ -34,51 +34,46 @@ test('basic output', t => {
 })
 
 test('search and select option', t => {
+  t.plan(7)
   const state = { options: ['foo', 'bar'] }
       , host  = tdraw(o('lookup-multiple', 1), lookup, state)
       , input = host('.textinput')
 
   // focus host
-  time(  0, d => 
-    host.emit('focus'))
+  host.emit('focus')
 
-  // check input focused, then enter text
-  time( 50, d => {
-    t.equal(state.focused, true, 'focused')
-    t.equal(document.activeElement, input.node(), 'refocus input')
+  // check input focused
+  t.equal(state.focused, true, 'focused')
+  t.equal(document.activeElement, input.node(), 'refocus input')
 
-    input
-      .text('br')
-      .emit('keyup')
-    })
+  // enter text
+  input
+    .text('br')
+    .emit('keyup')
   
-  // check fuzzy highlight, then click option
-  time(200, d => {
-    const option = host('li') 
-    t.equal(option.html(), '<span>b</span>a<span>r</span>', 'fuzzy match') 
+  // check fuzzy highlight
+  const option = host('li') 
+  t.equal(option.html(), '<span>b</span>a<span>r</span>', 'fuzzy match') 
 
-    option
-      .emit('click') 
-  })
+  // click option
+  option.emit('click') 
+  
+  // check selected
+  t.deepEqual(state.value, ['bar'], 'state value')
+  t.equal(host('.selected-tag').size(), 1, 'add one selected tag')
+  t.equal(host('.selected-tag').text(), 'bar', 'with correct text') 
 
-  // check selected, then blur
-  time(300, d => {
-    t.deepEqual(state.value, ['bar'], 'state value')
-    t.equal(host('.selected-tag').size(), 1, 'add one selected tag')
-    t.equal(host('.selected-tag').text(), 'bar', 'with correct text') 
-
-    document.activeElement.blur() })
+  // blur
+  document.activeElement.blur()
 
   // check unfocused
-  time(400, d => {
-    t.equal(state.focused, false, 'focus false') })
+  t.equal(state.focused, false, 'focus false')
 
-  time(500, d => { 
-    o.html('')
-    t.end() })
+  o.html('')
 })
 
 test('reset suggestion option on input', t => {
+  t.plan(1)
   const state = { options: ['foo', 'bar'], focused: true, suggestion: 1 }
       , host  = tdraw(o('lookup-multiple', 1), lookup, state)
       , input = host('.textinput')
@@ -88,6 +83,40 @@ test('reset suggestion option on input', t => {
     .emit('keyup')
   
   t.equal(state.suggestion, 0, 'reset suggestion option on input')
+  o.html('')
   t.end()
 })
 
+test('should emit deselect and change event on backspace', t => {
+  t.plan(2)
+  const state = { options: ['foo', 'bar'], value: ['foo'] }
+      , host  = tdraw(o('lookup-multiple', 1), lookup, state)
+      , input = host('.textinput')
+
+  host
+    .on('deselect', (d, i, el, e) => t.equal(e.detail, 'foo'))
+    .on('change', (d, i, el, e) => t.ok(true, 'change'))
+
+  input
+    .emit(extend(new CustomEvent('keydown'))({ key: 'Backspace' }))
+
+  o.html('')
+})
+
+test('should emit deselect, select and change event on click', t => {
+  t.plan(4)
+  const state  = { options: ['foo', 'bar'], value: [], focused: true }
+      , host   = tdraw(o('lookup-multiple', 1), lookup, state)
+      , option = host('li:last-child')
+
+  host
+    .on('deselect', (d, i, el, e) => t.equal(e.detail, 'foo', 'deselect'))
+    .on('select', (d, i, el, e) => t.equal(e.detail, 'foo', 'select'))
+    .on('change', (d, i, el, e) => t.ok(true, 'change'))
+
+  option
+    .emit('click')
+    .emit('click')
+
+  o.html('')
+})

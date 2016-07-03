@@ -68,12 +68,13 @@ export default function lookupMultiple(state){
   }
 
   function backspaceLozenge(d, i, el, e) {
-    const { anchorOffset, focusOffset, anchorNode, focusNode } = root.getSelection()
+    const { anchorOffset, focusOffset } = root.getSelection()
     if (e.key == 'Backspace'
     && ((!anchorOffset && !focusOffset) || 
         (anchorOffset == 1 && focusOffset == 1 && !query))) { // firefox 48 bug
-      state.value.pop()
-      o.draw()
+      o.emit('deselect', state.value.pop())
+       .emit('change')
+       .draw()
     }
   }
 
@@ -102,13 +103,17 @@ export default function lookupMultiple(state){
   }
 
   function toggleOption(d) {
+    const event = is.in(value)(d) ? 'deselect' : 'select'
+
     is.in(value)(d)
-      ? value.splice(value.indexOf(d), 1)
-      : value.push(d)
+      ? (value.splice(value.indexOf(d), 1), true)
+      : (value.push(d), false)
 
     state.query = ''
     updateRegex()
-    o.draw()
+    o.emit(event, d)
+     .emit('change')
+     .draw()
   }
 
   function changeSuggestion(d) {
