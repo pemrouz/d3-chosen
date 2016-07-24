@@ -1,16 +1,16 @@
 export default function lookupMultiple(state){ 
-  var o          = once(this)
-    , host       = this.host || this
-    , root       = o.node().getSelection ? o.node() : window
-    , val        = defaults(state, 'val'       , str)
-    , value      = defaults(state, 'value'     , [])
-    , match      = defaults(state, 'match'     , defaultMatch)
-    , query      = defaults(state, 'query'     , '')
-    , regex      = defaults(state, 'regex'     , /().*?/i)
-    , options    = defaults(state, 'options'   , [])
-    , focused    = defaults(state, 'focused'   , false)
-    , renderer   = defaults(state, 'renderer'  , fuzzy)
-    , suggestion = defaults(state, 'suggestion')
+  const o          = once(this)
+      , host       = this.host || this
+      , root       = o.node().getSelection ? o.node() : window
+      , val        = defaults(state, 'val'       , str)
+      , value      = defaults(state, 'value'     , [])
+      , match      = defaults(state, 'match'     , defaultMatch)
+      , query      = defaults(state, 'query'     , '')
+      , regex      = defaults(state, 'regex'     , /().*?/i)
+      , options    = defaults(state, 'options'   , [])
+      , focused    = defaults(state, 'focused'   , false)
+      , renderer   = defaults(state, 'renderer'  , fuzzy)
+      , suggestion = defaults(state, 'suggestion')
 
   o.attr('tabindex', '-1')
     .classed('is-active', focused)
@@ -138,7 +138,7 @@ export default function lookupMultiple(state){
       case 'ArrowDown':
         e.preventDefault()
         state.suggestion = (is.def(suggestion)
-          ? ++suggestion
+          ? ++state.suggestion
           : 0) % len
         o.draw()
         break
@@ -146,7 +146,7 @@ export default function lookupMultiple(state){
       case 'ArrowUp':
         e.preventDefault()
         state.suggestion = (is.def(suggestion)
-          ? (--suggestion < 0 ? len + suggestion : suggestion)
+          ? (--state.suggestion < 0 ? len + suggestion : suggestion)
           : state.visible.length - 1) % len
         o.draw()
         break
