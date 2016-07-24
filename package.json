@@ -9,7 +9,7 @@
     "url": "git+https://github.com/pemrouz/d3-chosen.git"
   },
   "scripts": {
-    "bundle": "sh -c 'echo \"ripple(require(\\'./\\'))\" | browserify - -o dist/client.js",
+    "bundle": "browserify . -o dist/client.js -s chosen",
     "gzip": "gzip -c dist/client.min.js > dist/client.min.js.gz",
     "minify": "uglifyjs dist/client.js -m -c keep_fargs=false -o dist/client.min.js --screw-ie8",
     "babel": "babel src -d dist --copy-files",
