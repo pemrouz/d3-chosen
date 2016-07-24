@@ -15,5 +15,6 @@ watch:
 browsers:
   - chrome
   - firefox
+  - safari
   - ie11
   - ie9
