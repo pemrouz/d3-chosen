@@ -2,53 +2,36 @@
 
 [![image](https://img.shields.io/badge/component-vanilla-green.svg?style=flat-square)](https://github.com/pemrouz/vanilla/#vanilla)
 
-A lean collection of select-esque components. Comes with fast fuzzy filtering, keyboard shortcuts, IE9+ support. 
+[![Browser Results](https://saucelabs.com/browser-matrix/d3-chosen.svg)](https://saucelabs.com/u/d3-chosen)
 
-## Resources
+A lean collection of select-esque components. Comes with fast fuzzy filtering, keyboard shortcuts, IE9+ support.
 
-This module currently exports:
+![image](https://cloud.githubusercontent.com/assets/2184177/16548408/ca1bd50e-4185-11e6-9af2-e116ade2efe4.png)
 
-* `lookup-multiple`
-* `lookup-multiple.css`
-
-You can require the resources individually and [use them directly](https://github.com/pemrouz/vanilla/#vanilla) or register them with [ripple](https://github.com/rijs/minimal#minimal) and use them as custom elements. See `demo.html` for a quick example.
-
-More flavours coming soon!
+### [Usage](https://github.com/pemrouz/vanilla/#using)
 
 <br>
-### API
+---
 
-These are all the options you can pass to the component:
+# `lookup-multiple`
 
-**`options = []`**
+### State
 
-An array of all options. The options can be strings or objects. 
+* **`options = []`**: An array of all options. The options can be strings or objects. 
 
-**`value = []`**
+* **`value = []`**: An array of the selected objects which is a subset of the `options`.
 
-An array of the selected objects which is a subset of the `options`.
+* **`query = ''`**: The text currently entered into the textfield
 
-**`query = ''`**
+* **`match`**: This function should return `true` or `false` for every option to determine whether the item should be visible or not. By default, it does case-insensitive Sublime-style fuzzy filtering. For example, "js" would match "JavaScript".
 
-The text currently entered into the textfield
+* **`focused = false`**: The current focused state of the component
 
-**`match`**
+* **`renderer`**: This function is used to render each individual option. By default, it underlines the parts of the text that match the fuzzy filter.
 
-This function should return `true` or `false` for every option to determine whether the item should be visible or not. By default, it does case-insensitive Sublime-style fuzzy filtering. For example, "js" would match "JavaScript".
+* **`val =`[`str`](https://github.com/utilise/utilise#--str)**: This function returns the value of an option. If your options are an array of objects, this is used by the default matching function and to determine the label to display for each option. For example:
 
-**`focused = false`**
-
-The current focused state of the component
-
-**`renderer`**
-
-This function is used to render each individual option. By default, it underlines the parts of the text that match the fuzzy filter.
-
-**`val =`[`str`](https://github.com/utilise/utilise#--str)**
-
-This function returns the value of an option. If your options are an array of objects, this is used by the default matching function and to determine the label to display for each option. For example:
-
-```js
+  ```js
 { 
   options: [
     { firstname: 'John', lastname: 'Smith' }
@@ -59,21 +42,21 @@ This function returns the value of an option. If your options are an array of ob
 }
 ```
 
-**`suggestion`**
-
-The index of the currently suggested option. This is used internally, you will rarely set this.
+* **`suggestion`**: The index of the currently suggested option. This is used internally, you will rarely set this.
 
 <br>
 ### Events
 
-**`change`**
+* **`change`**: Notifies of all changes to the value (select and deselect).
 
-Notifies of all changes to the value (select and deselect).
+* **`select`**: Notifies when an option has been selected. `e.detail` is the selected option.
 
-**`select`** 
+* **`deselect`**: Notifies when an option has been deselected. `e.detail` is the deselecte option.
 
-Notifies when an option has been selected. `e.detail` is the selected option.
-
-**`deselect`** 
-
-Notifies when an option has been deselected. `e.detail` is the deselecte option.
+---
+# `lookup-single`
+---
+# `select-multiple`
+---
+# `select-single`
+---
