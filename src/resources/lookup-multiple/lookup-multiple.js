@@ -137,7 +137,7 @@ export default function lookupMultiple(state){
       case 'Down':
       case 'ArrowDown':
         e.preventDefault()
-        state.suggestion = (is.def(suggestion)
+        state.suggestion = (is.def(state.suggestion)
           ? ++state.suggestion
           : 0) % len
         o.draw()
@@ -145,15 +145,15 @@ export default function lookupMultiple(state){
       case 'Up':
       case 'ArrowUp':
         e.preventDefault()
-        state.suggestion = (is.def(suggestion)
-          ? (--state.suggestion < 0 ? len + suggestion : suggestion)
+        state.suggestion = (is.def(state.suggestion)
+          ? (--state.suggestion < 0 ? len + state.suggestion : state.suggestion)
           : state.visible.length - 1) % len
         o.draw()
         break
       case 'Enter':
         e.preventDefault()
-        if (is.def(suggestion)) {
-          toggleOption(state.visible[suggestion])
+        if (is.def(state.suggestion)) {
+          toggleOption(state.visible[state.suggestion])
           o.draw()
         }
         break
