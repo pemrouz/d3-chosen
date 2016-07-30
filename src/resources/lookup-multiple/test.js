@@ -98,7 +98,7 @@ test('should emit deselect and change event on backspace', t => {
     .on('change', (d, i, el, e) => t.ok(true, 'change'))
 
   input
-    .emit(extend(new CustomEvent('keydown'))({ key: 'Backspace' }))
+    .emit(extend(new window.CustomEvent('keydown'))({ key: 'Backspace' }))
 
   o.html('')
 })
