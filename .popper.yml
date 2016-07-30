@@ -3,6 +3,8 @@ globals:
   - <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/3.0.0/chai.min.js"></script>
   - <script src="https://rawgit.com/utilise/utilise/master/utilise.js"></script>
 
+farm: saucelabs
+
 runner: tape
 
 tests: (npm run build > /dev/null) && browserify ./dist/resources/lookup-multiple/test.js
