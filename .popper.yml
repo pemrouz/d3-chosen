@@ -7,7 +7,9 @@ farm: saucelabs
 
 runner: tape
 
-tests: (npm run build > /dev/null) && browserify ./dist/resources/lookup-multiple/test.js
+tests: (npm run build > /dev/null) && cd ./dist/resources/lookup-multiple && cat test.js
+  | sed -E "s/require\('tap'\)\.test/require\('tape'\)/"
+  | browserify - 
   -i jsdom 
   -t utilise.filify
 

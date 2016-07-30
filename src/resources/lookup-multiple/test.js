@@ -1,6 +1,5 @@
 import 'utilise'
 import 'browserenv'
-import test from 'tape'
 import scope from 'cssscope'
 import lookup from './lookup-multiple'
 import options from '../../../data.json'
@@ -8,6 +7,7 @@ import options from '../../../data.json'
 const style = window.getComputedStyle
     , o = once(document.body)('.container', 1, null, ':first-child')
     , fullname = d => d.firstname + ' ' + d.lastname 
+    , test = require('tap').test
 
 once(document.head)
   ('style', 1)
