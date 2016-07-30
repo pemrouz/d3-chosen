@@ -6,10 +6,6 @@ require('utilise');
 
 require('browserenv');
 
-var _tape = require('tape');
-
-var _tape2 = _interopRequireDefault(_tape);
-
 var _cssscope = require('cssscope');
 
 var _cssscope2 = _interopRequireDefault(_cssscope);
@@ -30,11 +26,12 @@ var style = window.getComputedStyle,
     o = once(document.body)('.container', 1, null, ':first-child'),
     fullname = function fullname(d) {
   return d.firstname + ' ' + d.lastname;
-};
+},
+    test = require('tap').test;
 
 once(document.head)('style', 1).html((0, _cssscope2.default)(file(__dirname + '/lookup-multiple.css'), 'lookup-multiple'));
 
-(0, _tape2.default)('basic output', function (t) {
+test('basic output', function (t) {
   t.plan(1);
 
   var host = o('lookup-multiple', 1).node();
@@ -45,7 +42,7 @@ once(document.head)('style', 1).html((0, _cssscope2.default)(file(__dirname + '/
   o.html('');
 });
 
-(0, _tape2.default)('search and select option', function (t) {
+test('search and select option', function (t) {
   t.plan(7);
   var state = { options: ['foo', 'bar'] },
       host = tdraw(o('lookup-multiple', 1), _lookupMultiple2.default, state),
@@ -82,7 +79,7 @@ once(document.head)('style', 1).html((0, _cssscope2.default)(file(__dirname + '/
   o.html('');
 });
 
-(0, _tape2.default)('reset suggestion option on input', function (t) {
+test('reset suggestion option on input', function (t) {
   t.plan(1);
   var state = { options: ['foo', 'bar'], focused: true, suggestion: 1 },
       host = tdraw(o('lookup-multiple', 1), _lookupMultiple2.default, state),
@@ -95,7 +92,7 @@ once(document.head)('style', 1).html((0, _cssscope2.default)(file(__dirname + '/
   t.end();
 });
 
-(0, _tape2.default)('should emit deselect and change event on backspace', function (t) {
+test('should emit deselect and change event on backspace', function (t) {
   t.plan(2);
   var state = { options: ['foo', 'bar'], value: ['foo'] },
       host = tdraw(o('lookup-multiple', 1), _lookupMultiple2.default, state),
@@ -107,12 +104,12 @@ once(document.head)('style', 1).html((0, _cssscope2.default)(file(__dirname + '/
     return t.ok(true, 'change');
   });
 
-  input.emit(extend(new CustomEvent('keydown'))({ key: 'Backspace' }));
+  input.emit(extend(new window.CustomEvent('keydown'))({ key: 'Backspace' }));
 
   o.html('');
 });
 
-(0, _tape2.default)('should emit deselect, select and change event on click', function (t) {
+test('should emit deselect, select and change event on click', function (t) {
   t.plan(4);
   var state = { options: ['foo', 'bar'], value: [], focused: true },
       host = tdraw(o('lookup-multiple', 1), _lookupMultiple2.default, state),
