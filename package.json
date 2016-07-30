@@ -33,6 +33,7 @@
     "rijs.export": "*",
     "tap": "^6.2.0",
     "tape": "*",
+    "tapify": "0.0.1",
     "utilise": "*",
     "utilise.filify": "*"
   }

@@ -1,18 +1,16 @@
 globals:
   - <script src="https://cdn.polyfill.io/v1/polyfill.min.js"></script>
-  - <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/3.0.0/chai.min.js"></script>
-  - <script src="https://rawgit.com/utilise/utilise/master/utilise.js"></script>
 
 farm: saucelabs
 
 runner: tape
 
-tests: (npm run build > /dev/null) && cd ./dist/resources/lookup-multiple && cat test.js
-  | sed -E "s/require\('tap'\)\.test/require\('tape'\)/"
-  | browserify - 
+tests: (npm run build > /dev/null) && browserify 
   -i jsdom 
   -t utilise.filify
-
+  -t tapify 
+  dist/resources/lookup-multiple/test.js 
+  
 watch: 
   - src
 
