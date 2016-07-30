@@ -16,8 +16,8 @@
     "clean": "rm -rf dist && mkdir dist",
     "export": "sh -c 'rijs.export'",
     "build": "npm run clean && npm run babel && npm run export && npm run bundle && npm run minify && npm run gzip",
-    "test-browser": "popper",
-    "test": "tap dist/resources/lookup-multiple/test.js",
+    "test": "popper",
+    "test-node": "tap dist/resources/lookup-multiple/test.js",
     "coverage": "tap dist/resources/lookup-multiple/test.js --cov --coverage-report=lcov",
     "version": "npm run build && git add -A",
     "postversion": "git push && git push --tags"
