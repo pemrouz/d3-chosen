@@ -19,4 +19,4 @@ browsers:
   - firefox
   - safari
   - ie11
-  - ie9
+  # - ie9 # socket.io broken on ie9
