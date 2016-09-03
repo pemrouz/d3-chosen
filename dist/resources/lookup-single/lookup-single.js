@@ -3,29 +3,38 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = lookupMultiple;
-function lookupMultiple(node, state) {
+exports.default = lookupSingle;
+function lookupSingle(node, state) {
   var o = once(node),
+      host = node.host || node,
       root = node.getSelection ? node : window,
       val = defaults(state, 'val', str),
-      value = defaults(state, 'value', []),
+      value = defaults(state, 'value'),
       match = defaults(state, 'match', defaultMatch),
       query = defaults(state, 'query', ''),
       regex = defaults(state, 'regex', /().*?/i),
       options = defaults(state, 'options', []),
+      optional = defaults(state, 'optional', false),
       focused = defaults(state, 'focused', false),
       renderer = defaults(state, 'renderer', fuzzy),
-      suggestion = defaults(state, 'suggestion');
+      suggestion = defaults(state, 'suggestion'),
+      placeholder = defaults(state, 'placeholder', '');
 
-  o.attr('tabindex', '-1').classed('is-active', focused).on('focus.refocus', refocus);
+  o.attr('tabindex', '0').classed('is-optional', optional).classed('is-focused', focused).classed('is-empty', !value).on('focus.refocus', focus);
 
-  o('.textfield', 1)('.selected-tag', value, null, '.textinput').text(val)('.remove-tag', 1).on('click.remove', removeTag);
+  o('.textfield', 1).attr('placeholder', placeholder).text(value ? val(value) : '')('.clear', value).on('click.clear', clear);
 
-  o('.textfield')('.textinput', 1).on('focus.active', focus).on('blur.active', blur).on('keydown.lozenge', backspaceLozenge).on('keydown.shortcuts', shortcuts).on('keyup.query', updateQuery).attr('contenteditable', 'true').text(query);
+  o('.textinput', 1).on('focus.active', focus).on('blur.active', blur).on('keydown.shortcuts', shortcuts).on('keyup.query', updateQuery).attr('contenteditable', 'true').html(query).each(setFocus);
 
-  o('.dropdown', 1)('li', state.visible = options.filter(match).sort(az(val))).classed('is-suggestion', function (d, i) {
+  o('label', 1).text(placeholder);
+
+  o('.dropdown', 1)('li.option', state.visible = options.filter(match).sort(az(val))).classed('is-suggestion', function (d, i) {
     return isFinite(suggestion) && i == suggestion;
-  }).classed('is-selected', is.in(value)).on('click.select', toggleOption).on('mouseover.suggestion', changeSuggestion).html(state.renderer).each(scrollIntoViewIfNeeded);
+  }).classed('is-selected', is(value)).on('click.select', selectOption).on('mouseover.suggestion', changeSuggestion).html(state.renderer).each(scrollIntoViewIfNeeded);
+
+  function setFocus(node) {
+    if (focused) node.focus();
+  }
 
   function defaultMatch(d, i) {
     return val(d).match ? val(d).match(state.regex) : true;
@@ -43,60 +52,32 @@ function lookupMultiple(node, state) {
     state.regex = new RegExp('(' + state.query.replace(/\W+/, '').split('').join(').*?(') + ').*?', 'i');
   }
 
-  function backspaceLozenge(d, i, el, e) {
-    var _root$getSelection = root.getSelection();
-
-    var anchorOffset = _root$getSelection.anchorOffset;
-    var focusOffset = _root$getSelection.focusOffset;
-
-    if (e.key == 'Backspace' && (!anchorOffset && !focusOffset || anchorOffset == 1 && focusOffset == 1 && !query)) {
-      // firefox 48 bug
-      o.emit('deselect', state.value.pop()).emit('change').draw();
-    }
+  function clear() {
+    delete state.value;
+    o.draw();
   }
 
-  function refocus() {
-    var input = o('.textinput').node(),
-        range = document.createRange(),
-        sel = root.getSelection();
-
-    input.focus();
-    range.selectNodeContents(input);
-    range.collapse(false);
-    sel.removeAllRanges();
-    sel.addRange(range);
-  }
-
-  function focus(d) {
+  function focus() {
     if (focused) return;
     state.focused = true;
     o.draw();
   }
 
   function blur(d, i, el, e) {
-    if (!focused || e.relatedTarget == (node.host || node)) return refocus();
+    if (!focused || e.relatedTarget == host || host.contains(e.explicitOriginalTarget)) return focus();
     state.focused = false;
-    o.draw();
+    o.emit('blur').draw();
   }
 
-  function toggleOption(d) {
-    var event = is.in(value)(d) ? 'deselect' : 'select';
-
-    is.in(value)(d) ? (value.splice(value.indexOf(d), 1), true) : (value.push(d), false);
-
+  function selectOption(d) {
+    state.value = d;
     state.query = '';
     updateRegex();
-    o.emit(event, d).emit('change').draw();
+    o.emit('change').draw();
   }
 
   function changeSuggestion(d) {
     state.suggestion = state.visible.indexOf(d);
-    o.draw();
-  }
-
-  function removeTag(d) {
-    var i = value.indexOf(d);
-    value.splice(i, 1);
     o.draw();
   }
 
@@ -122,7 +103,7 @@ function lookupMultiple(node, state) {
       case 'Enter':
         e.preventDefault();
         if (is.def(state.suggestion)) {
-          toggleOption(state.visible[state.suggestion]);
+          selectOption(state.visible[state.suggestion]);
           o.draw();
         }
         break;
