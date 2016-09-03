@@ -2,7 +2,7 @@
 
 [![image](https://img.shields.io/badge/component-vanilla-green.svg?style=flat-square)](https://github.com/pemrouz/vanilla/#vanilla)
 [![Build Status](https://travis-ci.org/pemrouz/d3-chosen.svg)](https://travis-ci.org/pemrouz/d3-chosen)
-[![Browser Results](https://saucelabs.com/browser-matrix/d3-chosen.svg)](https://saucelabs.com/u/d3-chosen)
+<br>[![Browser Results](https://saucelabs.com/browser-matrix/d3-chosen.svg)](https://saucelabs.com/u/d3-chosen)
 
 A lean collection of select-esque components. Comes with fast fuzzy filtering, keyboard shortcuts, IE9+ support.
 
