@@ -17,7 +17,7 @@ test('basic output', t => {
   t.plan(1)
 
   const host = o('lookup-multiple', 1).node()
-  lookup.call(host, { options: [ 'foo' ] })
+  lookup(host, { options: [ 'foo' ] })
 
   t.equal(lo(host.outerHTML), stripws`
     <lookup-multiple tabindex="-1">
