@@ -35,7 +35,7 @@ test('basic output', function (t) {
   t.plan(1);
 
   var host = o('lookup-multiple', 1).node();
-  _lookupMultiple2.default.call(host, { options: ['foo'] });
+  (0, _lookupMultiple2.default)(host, { options: ['foo'] });
 
   t.equal(lo(host.outerHTML), stripws(_templateObject), 'basic structure');
 
