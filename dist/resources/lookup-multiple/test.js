@@ -1,7 +1,5 @@
 'use strict';
 
-var _templateObject = _taggedTemplateLiteral(['\n    <lookup-multiple tabindex="-1" class="is-empty">\n      <div class="textfield">\n        <div class="textinput" contenteditable="true" tabindex="0"></div>\n      </div>\n      <label></label>\n      <div class="dropdown">\n        <li>foo</li>\n      </div>\n    </lookup-multiple>\n  '], ['\n    <lookup-multiple tabindex="-1" class="is-empty">\n      <div class="textfield">\n        <div class="textinput" contenteditable="true" tabindex="0"></div>\n      </div>\n      <label></label>\n      <div class="dropdown">\n        <li>foo</li>\n      </div>\n    </lookup-multiple>\n  ']);
-
 require('utilise');
 
 require('browserenv');
@@ -20,8 +18,6 @@ var _data2 = _interopRequireDefault(_data);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
 var style = window.getComputedStyle,
     o = once(document.body)('.container', 1, null, ':first-child'),
     fullname = function fullname(d) {
@@ -31,16 +27,27 @@ var style = window.getComputedStyle,
 
 once(document.head)('style', 1).html((0, _cssscope2.default)(file(__dirname + '/lookup-multiple.css'), 'lookup-multiple'));
 
-test('basic output', function (t) {
-  t.plan(1);
+t.end();
+// test('basic output', t => {
+//   t.plan(1)
 
-  var host = o('lookup-multiple', 1).node();
-  (0, _lookupMultiple2.default)(host, { options: ['foo'] });
+//   const host = o('lookup-multiple', 1).node()
+//   lookup(host, { options: [ 'foo' ] })
 
-  t.equal(lo(host.outerHTML), stripws(_templateObject), 'basic structure');
+//   t.equal(lo(host.outerHTML), stripws`
+//     <lookup-multiple tabindex="-1" class="is-empty">
+//       <div class="textfield">
+//         <div class="textinput" contenteditable="true" tabindex="0"></div>
+//       </div>
+//       <label></label>
+//       <div class="dropdown">
+//         <li>foo</li>
+//       </div>
+//     </lookup-multiple>
+//   `, 'basic structure')
 
-  o.html('');
-});
+//   o.html('')
+// })
 
 // test('search and select option', t => {
 //   t.plan(5)
