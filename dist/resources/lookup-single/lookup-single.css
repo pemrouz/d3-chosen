@@ -21,7 +21,7 @@
   color: #ccc;
   content: 'optional'; }
 
-  label {
+  :host > label {
     position: absolute;
     top: 6px;
     padding: 0;
@@ -40,11 +40,11 @@
   :host(.is-focused) label {
     color: #298eea; }
 
-  .textfield {
+  :host > .textfield {
     position: relative;
     background: white;
     min-height: 3em;
-    border-radius: 3px;
+    border-radius: 0.15em;
     border: 1px solid #dfdfdf;
     padding: 1.3em 0.85em 0.45em 0.85em;
     width: 100%;
@@ -56,7 +56,7 @@
   :host(.is-focused) > .textfield {
     border-color: #298eea;
     border-color: var(--lookup-single-primary, #298eea);
-    border-radius: 3px 3px 0 0;
+    border-radius: 0.15em 0.15em 0 0;
     /*box-shadow: inset 0 1px 2px rgba(0,0,0,0.075),0 0 5px rgba(81,167,232,0.5)*/}
   
   :host(.is-empty) > .textfield {
@@ -96,17 +96,19 @@
     border-bottom: none;
     border-color: #298eea;
     border-color: var(--lookup-single-primary, #298eea);
-    padding: 0 7px;
+    padding: 0 0.4em;
     height: 2em;
     text-align: left;
-    display: none;
+    left: -9999px;
+    /*display: none;*/
     outline: none; }
 
   :host(.is-focused) > .textinput {
+    left: initial;
     display: block; }
 
-  .dropdown {
-    border-radius: 0 0 3px 3px;
+  :host > .dropdown {
+    border-radius: 0 0 0.15em 0.15em;
     position: absolute;
     /*opacity: 0;*/
     /*pointer-events: none;*/
@@ -114,8 +116,7 @@
     transition: opacity 100ms;
     width: 100%;
     background: #fff;
-    border: 1px solid;
-    border-color: #298eea;
+    border: 1px solid #298eea;
     border-color: var(--lookup-single-primary, #298eea);
     overflow: auto;
     margin-top: 2em;
@@ -128,31 +129,30 @@
   :host(.is-focused) > .dropdown {
     display: block; }
 
-    .dropdown:empty::after {
+    :host > .dropdown:empty::after {
       line-height: 2em;
       opacity: 0.5;
       font-style: italic;
       content: 'No matching options' }
 
-    .dropdown > li {
+    :host > .dropdown > li {
       line-height: 2em;
       text-align: left;
       color: black;
       cursor: pointer;
-      padding: 0 7px; 
+      padding: 0 0.4em; 
       transition: 100ms; }
 
-    .dropdown > li:not(:last-child) {
+    :host > .dropdown > li:not(:last-child) {
       border-bottom: 1px solid #dfdfdf; }
 
-
-    .dropdown > li.is-selected {
+    :host > .dropdown > li.is-selected {
       background-color: #e4eef7;
       color: #4183c4; }
 
-    .dropdown > li.is-suggestion {
+    :host > .dropdown > li.is-suggestion {
       color: #fff;
       background-color: #4183c4; }
 
-      .dropdown > li > span {
+      :host > .dropdown > li > span {
         text-decoration: underline; }

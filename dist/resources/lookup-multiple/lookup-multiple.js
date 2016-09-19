@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = lookupMultiple;
 function lookupMultiple(node, state) {
   var o = once(node),
+      host = node.host || node,
       root = node.getSelection ? node : window,
       val = defaults(state, 'val', str),
       value = defaults(state, 'value', []),
@@ -13,19 +14,27 @@ function lookupMultiple(node, state) {
       query = defaults(state, 'query', ''),
       regex = defaults(state, 'regex', /().*?/i),
       options = defaults(state, 'options', []),
+      optional = defaults(state, 'optional', false),
       focused = defaults(state, 'focused', false),
       renderer = defaults(state, 'renderer', fuzzy),
-      suggestion = defaults(state, 'suggestion');
+      suggestion = defaults(state, 'suggestion'),
+      placeholder = defaults(state, 'placeholder', '');
 
-  o.attr('tabindex', '-1').classed('is-active', focused).on('focus.refocus', refocus);
+  o.attr('tabindex', '-1').classed('is-optional', optional).classed('is-focused', focused).classed('is-empty', !value.length && !query).on('click.refocus', focus);
 
   o('.textfield', 1)('.selected-tag', value, null, '.textinput').text(val)('.remove-tag', 1).on('click.remove', removeTag);
 
-  o('.textfield')('.textinput', 1).on('focus.active', focus).on('blur.active', blur).on('keydown.lozenge', backspaceLozenge).on('keydown.shortcuts', shortcuts).on('keyup.query', updateQuery).attr('contenteditable', 'true').text(query);
+  o('.textfield').attr('placeholder', placeholder)('.textinput', 1).on('focus.active', focus).on('blur.active', blur).on('keydown.lozenge', backspaceLozenge).on('keydown.shortcuts', shortcuts).on('keyup.query', updateQuery).attr('contenteditable', 'true').attr('tabindex', '0').html(query).each(setFocus);
+
+  o('label', 1).text(placeholder);
 
   o('.dropdown', 1)('li', state.visible = options.filter(match).sort(az(val))).classed('is-suggestion', function (d, i) {
     return isFinite(suggestion) && i == suggestion;
   }).classed('is-selected', is.in(value)).on('click.select', toggleOption).on('mouseover.suggestion', changeSuggestion).html(state.renderer).each(scrollIntoViewIfNeeded);
+
+  function setFocus(node) {
+    if (focused) node.focus();
+  }
 
   function defaultMatch(d, i) {
     return val(d).match ? val(d).match(state.regex) : true;
@@ -55,17 +64,17 @@ function lookupMultiple(node, state) {
     }
   }
 
-  function refocus() {
-    var input = o('.textinput').node(),
-        range = document.createRange(),
-        sel = root.getSelection();
+  // function refocus() {
+  //   const input = o('.textinput').node()
+  //       , range = document.createRange()
+  //       , sel = root.getSelection()
 
-    input.focus();
-    range.selectNodeContents(input);
-    range.collapse(false);
-    sel.removeAllRanges();
-    sel.addRange(range);
-  }
+  //   input.focus()
+  //   range.selectNodeContents(input)
+  //   range.collapse(false)
+  //   sel.removeAllRanges()
+  //   sel.addRange(range)
+  // }
 
   function focus(d) {
     if (focused) return;
@@ -74,15 +83,15 @@ function lookupMultiple(node, state) {
   }
 
   function blur(d, i, el, e) {
-    if (!focused || e.relatedTarget == (node.host || node)) return refocus();
+    if (!focused || e.relatedTarget == host) return focus();
     state.focused = false;
-    o.draw();
+    o.emit('blur').draw();
   }
 
   function toggleOption(d) {
-    var event = is.in(value)(d) ? 'deselect' : 'select';
+    var event = void 0;
 
-    is.in(value)(d) ? (value.splice(value.indexOf(d), 1), true) : (value.push(d), false);
+    is.in(value)(d) ? (value.splice(value.indexOf(d), 1), event = 'deselect') : (value.push(d), event = 'select');
 
     state.query = '';
     updateRegex();
@@ -97,7 +106,7 @@ function lookupMultiple(node, state) {
   function removeTag(d) {
     var i = value.indexOf(d);
     value.splice(i, 1);
-    o.draw();
+    o.emit('deselect', d).emit('change').draw();
   }
 
   function fuzzy(d, i) {

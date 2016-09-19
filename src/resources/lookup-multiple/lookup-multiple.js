@@ -1,19 +1,24 @@
 export default function lookupMultiple(node, state){ 
-  const o          = once(node)
-      , root       = node.getSelection ? node : window
-      , val        = defaults(state, 'val'       , str)
-      , value      = defaults(state, 'value'     , [])
-      , match      = defaults(state, 'match'     , defaultMatch)
-      , query      = defaults(state, 'query'     , '')
-      , regex      = defaults(state, 'regex'     , /().*?/i)
-      , options    = defaults(state, 'options'   , [])
-      , focused    = defaults(state, 'focused'   , false)
-      , renderer   = defaults(state, 'renderer'  , fuzzy)
-      , suggestion = defaults(state, 'suggestion')
+  const o           = once(node)
+      , host        = node.host || node
+      , root        = node.getSelection ? node : window
+      , val         = defaults(state, 'val'       , str)
+      , value       = defaults(state, 'value'     , [])
+      , match       = defaults(state, 'match'     , defaultMatch)
+      , query       = defaults(state, 'query'     , '')
+      , regex       = defaults(state, 'regex'     , /().*?/i)
+      , options     = defaults(state, 'options'   , [])
+      , optional    = defaults(state, 'optional'  , false)
+      , focused     = defaults(state, 'focused'   , false)
+      , renderer    = defaults(state, 'renderer'  , fuzzy)
+      , suggestion  = defaults(state, 'suggestion')
+      , placeholder = defaults(state, 'placeholder', '')
 
   o.attr('tabindex', '-1')
-    .classed('is-active', focused)
-    .on('focus.refocus' , refocus)
+    .classed('is-optional', optional)
+    .classed('is-focused' , focused)
+    .classed('is-empty'   , !value.length && !query)
+    .on('click.refocus'   , focus)
 
   o('.textfield', 1)
     ('.selected-tag', value, null, '.textinput')
@@ -22,6 +27,7 @@ export default function lookupMultiple(node, state){
         .on('click.remove', removeTag)
   
   o('.textfield')
+    .attr('placeholder' , placeholder)
     ('.textinput', 1)
       .on('focus.active', focus)
       .on('blur.active' , blur)
@@ -29,7 +35,12 @@ export default function lookupMultiple(node, state){
       .on('keydown.shortcuts', shortcuts)
       .on('keyup.query', updateQuery)
       .attr('contenteditable', 'true')
-      .text(query)
+       .attr('tabindex', '0')
+      .html(query)
+      .each(setFocus)
+
+  o('label', 1)
+    .text(placeholder)
 
   o('.dropdown', 1)
     ('li', state.visible = options.filter(match).sort(az(val)))
@@ -39,6 +50,10 @@ export default function lookupMultiple(node, state){
       .on('mouseover.suggestion', changeSuggestion)
       .html(state.renderer)
       .each(scrollIntoViewIfNeeded)
+
+  function setFocus(node) {
+    if (focused) node.focus()
+  }
 
   function defaultMatch(d, i) {
     return val(d).match
@@ -77,17 +92,17 @@ export default function lookupMultiple(node, state){
     }
   }
 
-  function refocus() {
-    const input = o('.textinput').node()
-        , range = document.createRange()
-        , sel = root.getSelection()
+  // function refocus() {
+  //   const input = o('.textinput').node()
+  //       , range = document.createRange()
+  //       , sel = root.getSelection()
 
-    input.focus()
-    range.selectNodeContents(input)
-    range.collapse(false)
-    sel.removeAllRanges()
-    sel.addRange(range)
-  }
+  //   input.focus()
+  //   range.selectNodeContents(input)
+  //   range.collapse(false)
+  //   sel.removeAllRanges()
+  //   sel.addRange(range)
+  // }
 
   function focus(d) {
     if (focused) return
@@ -96,17 +111,17 @@ export default function lookupMultiple(node, state){
   }
   
   function blur(d, i, el, e) {
-    if (!focused || e.relatedTarget == (node.host || node)) return refocus()
+    if (!focused || e.relatedTarget == host) return focus()
     state.focused = false
-    o.draw()
+    o.emit('blur').draw()
   }
 
   function toggleOption(d) {
-    const event = is.in(value)(d) ? 'deselect' : 'select'
+    let event 
 
     is.in(value)(d)
-      ? (value.splice(value.indexOf(d), 1), true)
-      : (value.push(d), false)
+      ? (value.splice(value.indexOf(d), 1), event = 'deselect')
+      : (value.push(d), event = 'select')
 
     state.query = ''
     updateRegex()
@@ -123,7 +138,9 @@ export default function lookupMultiple(node, state){
   function removeTag(d) {
     var i = value.indexOf(d)
     value.splice(i, 1)
-    o.draw()
+    o.emit('deselect', d)
+     .emit('change')
+     .draw()
   }
 
   function fuzzy(d, i) {
