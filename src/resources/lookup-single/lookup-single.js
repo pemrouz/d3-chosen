@@ -14,11 +14,11 @@ export default function lookupSingle(node, state){
       , suggestion  = defaults(state, 'suggestion')
       , placeholder = defaults(state, 'placeholder', '')
 
-  o.attr('tabindex', '0')
+  o.attr('tabindex', '-1')
     .classed('is-optional', optional)
     .classed('is-focused' , focused)
     .classed('is-empty'   , !value)
-    .on('focus.refocus'   , focus)
+    .on('click.refocus'   , focus)
     
   o('.textfield', 1)
     .attr('placeholder' , placeholder)
@@ -32,6 +32,7 @@ export default function lookupSingle(node, state){
     .on('keydown.shortcuts', shortcuts)
     .on('keyup.query', updateQuery)
     .attr('contenteditable', 'true')
+    .attr('tabindex', '0')
     .html(query)
     .each(setFocus)
 
@@ -89,7 +90,7 @@ export default function lookupSingle(node, state){
   }
 
   function blur(d, i, el, e) {
-    if (!focused || e.relatedTarget == host || host.contains(e.explicitOriginalTarget)) return focus()
+    if (!focused || e.relatedTarget == host) return focus()
     state.focused = false
     o.emit('blur').draw()
   }
