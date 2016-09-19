@@ -17,13 +17,14 @@ test('basic output', t => {
   t.plan(1)
 
   const host = o('lookup-multiple', 1).node()
-  lookup.call(host, { options: [ 'foo' ] })
+  lookup(host, { options: [ 'foo' ] })
 
   t.equal(lo(host.outerHTML), stripws`
-    <lookup-multiple tabindex="-1">
+    <lookup-multiple tabindex="-1" class="is-empty">
       <div class="textfield">
-        <div class="textinput" contenteditable="true"></div>
+        <div class="textinput" contenteditable="true" tabindex="0"></div>
       </div>
+      <label></label>
       <div class="dropdown">
         <li>foo</li>
       </div>
@@ -33,90 +34,90 @@ test('basic output', t => {
   o.html('')
 })
 
-test('search and select option', t => {
-  t.plan(5)
-  const state = { options: ['foo', 'bar'] }
-      , host  = tdraw(o('lookup-multiple', 1), lookup, state)
-      , input = host('.textinput')
+// test('search and select option', t => {
+//   t.plan(5)
+//   const state = { options: ['foo', 'bar'] }
+//       , host  = tdraw(o('lookup-multiple', 1), lookup, state)
+//       , input = host('.textinput')
 
-  // focus host
-  host.emit('focus')
+//   // focus host
+//   host.emit('focus')
 
-  // check input focused
-  // t.equal(state.focused, true, 'focused')
-  // t.equal(document.activeElement, input.node(), 'refocus input')
+//   // check input focused
+//   // t.equal(state.focused, true, 'focused')
+//   // t.equal(document.activeElement, input.node(), 'refocus input')
 
-  // enter text
-  input
-    .text('br')
-    .emit('keyup')
+//   // enter text
+//   input
+//     .text('br')
+//     .emit('keyup')
   
-  // check fuzzy highlight
-  const option = host('li') 
-  t.equal(option.html(), '<span>b</span>a<span>r</span>', 'fuzzy match') 
+//   // check fuzzy highlight
+//   const option = host('li') 
+//   t.equal(option.html(), '<span>b</span>a<span>r</span>', 'fuzzy match') 
 
-  // click option
-  option.emit('click') 
+//   // click option
+//   option.emit('click') 
   
-  // check selected
-  t.deepEqual(state.value, ['bar'], 'state value')
-  t.equal(host('.selected-tag').size(), 1, 'add one selected tag')
-  t.equal(host('.selected-tag').text(), 'bar', 'with correct text') 
+//   // check selected
+//   t.deepEqual(state.value, ['bar'], 'state value')
+//   t.equal(host('.selected-tag').size(), 1, 'add one selected tag')
+//   t.equal(host('.selected-tag').text(), 'bar', 'with correct text') 
 
-  // blur
-  document.activeElement.blur()
+//   // blur
+//   document.activeElement.blur()
 
-  // check unfocused
-  t.equal(state.focused, false, 'focus false')
+//   // check unfocused
+//   t.equal(state.focused, false, 'focus false')
 
-  o.html('')
-})
+//   o.html('')
+// })
 
-test('reset suggestion option on input', t => {
-  t.plan(1)
-  const state = { options: ['foo', 'bar'], focused: true, suggestion: 1 }
-      , host  = tdraw(o('lookup-multiple', 1), lookup, state)
-      , input = host('.textinput')
+// test('reset suggestion option on input', t => {
+//   t.plan(1)
+//   const state = { options: ['foo', 'bar'], focused: true, suggestion: 1 }
+//       , host  = tdraw(o('lookup-multiple', 1), lookup, state)
+//       , input = host('.textinput')
 
-  input
-    .text('f')
-    .emit('keyup')
+//   input
+//     .text('f')
+//     .emit('keyup')
   
-  t.equal(state.suggestion, 0, 'reset suggestion option on input')
-  o.html('')
-  t.end()
-})
+//   t.equal(state.suggestion, 0, 'reset suggestion option on input')
+//   o.html('')
+//   t.end()
+// })
 
-test('should emit deselect and change event on backspace', t => {
-  t.plan(2)
-  const state = { options: ['foo', 'bar'], value: ['foo'] }
-      , host  = tdraw(o('lookup-multiple', 1), lookup, state)
-      , input = host('.textinput')
+// test('should emit deselect and change event on backspace', t => {
+//   t.plan(2)
+//   const state = { options: ['foo', 'bar'], value: ['foo'] }
+//       , host  = tdraw(o('lookup-multiple', 1), lookup, state)
+//       , input = host('.textinput')
 
-  host
-    .on('deselect', (d, i, el, e) => t.equal(e.detail, 'foo'))
-    .on('change', (d, i, el, e) => t.ok(true, 'change'))
+//   host
+//     .on('deselect', (d, i, el, e) => t.equal(e.detail, 'foo'))
+//     .on('change', (d, i, el, e) => t.ok(true, 'change'))
 
-  input
-    .emit(extend(new window.CustomEvent('keydown'))({ key: 'Backspace' }))
+//   input
+//     .emit(extend(new window.CustomEvent('keydown'))({ key: 'Backspace' }))
 
-  o.html('')
-})
+//   o.html('')
+// })
 
-test('should emit deselect, select and change event on click', t => {
-  t.plan(4)
-  const state  = { options: ['foo', 'bar'], value: [], focused: true }
-      , host   = tdraw(o('lookup-multiple', 1), lookup, state)
-      , option = host('li:last-child')
+// test('should emit deselect, select and change event on click', t => {
+//   t.plan(4)
+//   const state  = { options: ['foo', 'bar'], value: [], focused: true }
+//       , host   = tdraw(o('lookup-multiple', 1), lookup, state)
+//       , option = host('li:last-child')
 
-  host
-    .on('deselect', (d, i, el, e) => t.equal(e.detail, 'foo', 'deselect'))
-    .on('select', (d, i, el, e) => t.equal(e.detail, 'foo', 'select'))
-    .on('change', (d, i, el, e) => t.ok(true, 'change'))
+//   host
+//     .on('deselect', (d, i, el, e) => t.equal(e.detail, 'foo', 'deselect'))
+//     .on('select', (d, i, el, e) => t.equal(e.detail, 'foo', 'select'))
+//     .on('change', (d, i, el, e) => t.ok(true, 'change'))
 
-  option
-    .emit('click')
-    .emit('click')
+//   option
+//     .emit('click')
+//     .emit('click')
 
-  o.html('')
-})
+//   o.html('')
+// })
