@@ -17,8 +17,8 @@
     "export": "sh -c 'rijs.export'",
     "build": "npm run clean && npm run babel && npm run export && npm run bundle && npm run minify && npm run gzip",
     "test": "popper",
-    "test-node": "tap dist/resources/lookup-multiple/test.js",
-    "coverage": "tap dist/resources/lookup-multiple/test.js --cov --coverage-report=lcov",
+    "test-node": "tap dist/**/test.js",
+    "coverage": "tap dist/**/test.js --cov --coverage-report=lcov",
     "version": "npm run build && git add -A",
     "postversion": "git push && git push --tags"
   },
@@ -29,6 +29,7 @@
     "browserenv": "*",
     "browserify": "*",
     "cssscope": "*",
+    "html-differ": "^1.3.4",
     "popper": "*",
     "rijs.export": "*",
     "tap": "^6.2.0",
