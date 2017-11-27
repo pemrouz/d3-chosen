@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = lookupMultiple;
 function lookupMultiple(node, state) {
-  // console.log("draw", window.getSelection().anchorOffset, window.getSelection().focusOffset)
   var o = once(node),
       host = node.host || node,
       root = node.getSelection ? node : window,
@@ -26,7 +25,7 @@ function lookupMultiple(node, state) {
 
   o('.textfield', 1)('.selected-tag', value, null, '.textinput').text(val)('.remove-tag', 1).on('click.remove', removeTag);
 
-  o('.textfield').attr('placeholder', placeholder)('.textinput', 1).on('focus.active', focus).on('blur.active', blur).on('keydown.lozenge', backspaceLozenge).on('keydown.shortcuts', shortcuts).on('keyup.query', updateQuery).attr('contenteditable', 'true').attr('tabindex', '0').html(query).each(setFocus);
+  o('.textfield').attr('placeholder', placeholder)('.textinput', 1).on('focus.active', focus).on('blur.active', blur).on('keydown.lozenge', backspaceLozenge).on('keydown.shortcuts', shortcuts).on('keyup.query', updateQuery).attr('contenteditable', 'true').attr('tabindex', '0').text(query).each(setFocus);
 
   o('label', 1).text(placeholder);
 
