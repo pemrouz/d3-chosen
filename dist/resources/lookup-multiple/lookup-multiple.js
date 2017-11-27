@@ -5,6 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = lookupMultiple;
 function lookupMultiple(node, state) {
+  // console.log("draw", window.getSelection().anchorOffset, window.getSelection().focusOffset)
   var o = once(node),
       host = node.host || node,
       root = node.getSelection ? node : window,
@@ -53,10 +54,9 @@ function lookupMultiple(node, state) {
   }
 
   function backspaceLozenge(d, i, el, e) {
-    var _root$getSelection = root.getSelection();
-
-    var anchorOffset = _root$getSelection.anchorOffset;
-    var focusOffset = _root$getSelection.focusOffset;
+    var _root$getSelection = root.getSelection(),
+        anchorOffset = _root$getSelection.anchorOffset,
+        focusOffset = _root$getSelection.focusOffset;
 
     if (e.key == 'Backspace' && (!anchorOffset && !focusOffset || anchorOffset == 1 && focusOffset == 1 && !query)) {
       // firefox 48 bug

@@ -18,16 +18,15 @@ var _data2 = _interopRequireDefault(_data);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var style = window.getComputedStyle;
-
-var _require = require('html-differ');
-
-var isEqual = _require.isEqual;
-var o = once(document.body)('.container', 1, null, ':first-child');
-var fullname = function fullname(d) {
+var style = window.getComputedStyle,
+    _require = require('html-differ'),
+    isEqual = _require.isEqual,
+    o = once(document.body)('.container', 1, null, ':first-child'),
+    fullname = function fullname(d) {
   return d.firstname + ' ' + d.lastname;
-};
-var test = require('tap').test;
+},
+    test = require('tap').test;
+
 
 once(document.head)('style', 1).html((0, _cssscope2.default)(file(__dirname + '/lookup-multiple.css'), 'lookup-multiple'));
 
@@ -125,6 +124,22 @@ test('should emit deselect, select and change event on click', function (t) {
   });
 
   option.emit('click').emit('click');
+
+  o.html('');
+});
+
+test('bug: should not reset on spaces', function (t) {
+  t.plan(5);
+  var state = {},
+      host = tdraw(o('lookup-multiple', 1), _lookupMultiple2.default, state),
+      input = host('.textinput');
+
+  input.html('john&nbsp;');
+  state.query = input.text();
+  host.node().draw();
+
+  t.equal(input.html(), 'john&nbsp;');
+  t.equal(input.text(), 'john ');
 
   o.html('');
 });

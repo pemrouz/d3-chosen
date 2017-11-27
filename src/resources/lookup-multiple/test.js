@@ -123,3 +123,19 @@ test('should emit deselect, select and change event on click', t => {
 
   o.html('')
 })
+
+test('bug: should not reset on spaces', t => {
+  t.plan(5)
+  const state = {}
+      , host  = tdraw(o('lookup-multiple', 1), lookup, state)
+      , input = host('.textinput')
+
+  input.html('john&nbsp;')
+  state.query = input.text()
+  host.node().draw()
+
+  t.equal(input.html(), 'john&nbsp;')
+  t.equal(input.text(), 'john ')
+
+  o.html('')
+})

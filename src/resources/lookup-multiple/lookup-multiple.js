@@ -35,8 +35,8 @@ export default function lookupMultiple(node, state){
       .on('keydown.shortcuts', shortcuts)
       .on('keyup.query', updateQuery)
       .attr('contenteditable', 'true')
-       .attr('tabindex', '0')
-      .html(query)
+      .attr('tabindex', '0')
+      .text(query)
       .each(setFocus)
 
   o('label', 1)
