@@ -3,7 +3,7 @@ export default function lookupMultiple(node, state){
       , host        = node.host || node
       , root        = node.getSelection ? node : window
       , val         = defaults(state, 'val'       , str)
-      , value       = defaults(state, 'value'     , [])
+      , value       = defaults(state, 'value'     , state.default || [])
       , match       = defaults(state, 'match'     , defaultMatch)
       , query       = defaults(state, 'query'     , '')
       , regex       = defaults(state, 'regex'     , /().*?/i)
