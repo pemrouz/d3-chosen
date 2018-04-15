@@ -1,9 +1,11 @@
+module.exports = `
 *, *::before, *::after {
   box-sizing: border-box; }
 
 :host {
   /*z-index: 10;*/
   border: none;
+  color: black;
   outline: none;
   position: relative;
   display: inline-block;
@@ -154,3 +156,4 @@
 
       :host > .dropdown > li > span {
         text-decoration: underline; }
+        `

@@ -1,9 +1,11 @@
+module.exports = `
 *, *::before, *::after {
   box-sizing: border-box; }
 
 :host {
-  /*z-index: 10;*/
+  vertical-align: top;
   border: none;
+  color: black;
   outline: none;
   position: relative;
   display: inline-block;
@@ -19,7 +21,7 @@
   font-size: 0.7em;
   color: #ccc;
   content: 'optional'; }
-  
+
   :host > label {
     position: absolute;
     top: 6px;
@@ -54,10 +56,10 @@
 
   :host(.is-focused) > .textfield {
     border-color: #298eea;
-    border-color: var(--lookup-multiple-primary, #298eea);
-    border-bottom: none;
-    border-radius: 0.15em 0.15em 0 0; }
-
+    border-color: var(--lookup-single-primary, #298eea);
+    border-radius: 0.15em 0.15em 0 0;
+    /*box-shadow: inset 0 1px 2px rgba(0,0,0,0.075),0 0 5px rgba(81,167,232,0.5)*/}
+  
   :host(.is-empty) > .textfield {
     padding: 0.875em .85em; }
 
@@ -67,57 +69,58 @@
     content: attr(placeholder);  
     opacity: 0.6; }
 
-    :host > .textfield > .textinput {
-      height: 0.8em;
-      vertical-align: top;
-      max-width: 100%;
-      line-height: 0.8em;
-      padding: 0.1em;
-      margin-bottom: 0.15em;
-      display: inline-block;
-      color: black;
-      outline: none; }
+    :host > .textfield > .clear {
+      position: absolute;
+      opacity: 0.5;
+      font-size: 1em;
+      right: 0.5em;
+      top: calc(50% - 0.5em);
+      text-align: center;
+      line-height: 1em;
+      cursor: pointer; }
 
-    :host > .textfield > .selected-tag {
-      background-color: #e4eef7;
-      color: #4183c4;
-      display: inline-block;
-      border-radius: 0.15em;
-      margin-right: 0.1em;
-      margin-bottom: 0.1em;
-      font-size: 0.75em;
-      line-height: 1.4em;
-      /*padding: 0.1em;*/
-      position: relative;
-      padding-left: 0.3em;
-      padding-right: 1.2em; }
+    :host > .textfield > .clear:hover {
+      opacity: 1 }
 
-      :host > .textfield > .selected-tag > .remove-tag {
-        position: absolute;
-        opacity: 0.5;
-        font-size: 1em;
-        right: 0.25em;
-        top: calc(50% - 0.5em);
-        text-align: center;
-        line-height: 1em;
-        cursor: pointer; }
+    :host > .textfield > .clear::after {
+      content: '×'; }
 
-      :host > .textfield > .selected-tag > .remove-tag:hover {
-        opacity: 1; }
+  :host > .textinput {
+    position: absolute;
+    z-index: 10;
+    line-height: 2em;
+    width: 100%;
+    background: white;
+    cursor: text;
+    border: 1px solid;
+    border-top: none;
+    border-bottom: none;
+    border-color: #298eea;
+    border-color: var(--lookup-single-primary, #298eea);
+    padding: 0 0.4em;
+    height: 2em;
+    text-align: left;
+    left: -9999px;
+    /*display: none;*/
+    outline: none; }
 
-      :host > .textfield > .selected-tag > .remove-tag::after {
-        content: '×'; }
+  :host(.is-focused) > .textinput {
+    left: initial;
+    display: block; }
 
   :host > .dropdown {
     border-radius: 0 0 0.15em 0.15em;
     position: absolute;
+    /*opacity: 0;*/
+    /*pointer-events: none;*/
     display: none;
     transition: opacity 100ms;
     width: 100%;
     background: #fff;
     border: 1px solid #298eea;
-    border-color: var(--lookup-multiple-primary, #298eea);
+    border-color: var(--lookup-single-primary, #298eea);
     overflow: auto;
+    margin-top: 2em;
     list-style: none; 
     max-height: 200px;
     overflow: auto; 
@@ -144,13 +147,14 @@
     :host > .dropdown > li:not(:last-child) {
       border-bottom: 1px solid #dfdfdf; }
 
-    :host > .dropdown > .is-selected {
+    :host > .dropdown > li.is-selected {
       background-color: #e4eef7;
       color: #4183c4; }
 
-    :host > .dropdown > .is-suggestion {
+    :host > .dropdown > li.is-suggestion {
       color: #fff;
       background-color: #4183c4; }
 
       :host > .dropdown > li > span {
         text-decoration: underline; }
+        `

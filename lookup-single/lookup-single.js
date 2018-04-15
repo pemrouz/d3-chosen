@@ -1,9 +1,20 @@
-export default function lookupMultiple(node, state){ 
+const styles = require('./lookup-single.css.js')
+    , define = require('@compone/define')
+    , style  = require('@compone/style')
+    , defaults = require('utilise/defaults')
+    , once = require('utilise/once')
+    , str = require('utilise/str')
+    , az = require('utilise/az')
+    , is = require('utilise/is')
+    , to = require('utilise/to')
+    
+module.exports = define('lookup-single', function lookupMultiple(node, state){ 
+  style(node, styles)
   const o           = once(node)
       , host        = node.host || node
       , root        = node.getSelection ? node : window
       , val         = defaults(state, 'val'       , str)
-      , value       = defaults(state, 'value'     , state.default || [])
+      , value       = defaults(state, 'value'     , state.default)
       , match       = defaults(state, 'match'     , defaultMatch)
       , query       = defaults(state, 'query'     , '')
       , regex       = defaults(state, 'regex'     , /().*?/i)
@@ -17,36 +28,33 @@ export default function lookupMultiple(node, state){
   o.attr('tabindex', '-1')
     .classed('is-optional', optional)
     .classed('is-focused' , focused)
-    .classed('is-empty'   , !value.length && !query)
+    .classed('is-empty'   , !value)
     .on('click.refocus'   , focus)
-
+    
   o('.textfield', 1)
-    ('.selected-tag', value, null, '.textinput')
-      .text(val)
-      ('.remove-tag', 1)
-        .on('click.remove', removeTag)
-  
-  o('.textfield')
     .attr('placeholder' , placeholder)
-    ('.textinput', 1)
-      .on('focus.active', focus)
-      .on('blur.active' , blur)
-      .on('keydown.lozenge', backspaceLozenge)
-      .on('keydown.shortcuts', shortcuts)
-      .on('keyup.query', updateQuery)
-      .attr('contenteditable', 'true')
-      .attr('tabindex', '0')
-      .text(query)
-      .each(setFocus)
+    .text(value ? val(value) : '')
+    ('.clear', value)
+      .on('click.clear', clear)
+
+  o('.textinput', 1)
+    .on('focus.active', focus)
+    .on('blur.active' , blur)
+    .on('keydown.shortcuts', shortcuts)
+    .on('keyup.query', updateQuery)
+    .attr('contenteditable', 'true')
+    .attr('tabindex', '0')
+    .html(query)
+    .each(setFocus)
 
   o('label', 1)
     .text(placeholder)
 
   o('.dropdown', 1)
-    ('li', state.visible = options.filter(match).sort(az(val)))
+    ('li.option', state.visible = options.filter(match).sort(az(val)))
       .classed('is-suggestion', (d, i) => isFinite(suggestion) && i == suggestion)
-      .classed('is-selected', is.in(value))
-      .on('click.select', toggleOption)
+      .classed('is-selected', is(value))
+      .on('click.select', selectOption)
       .on('mouseover.suggestion', changeSuggestion)
       .html(state.renderer)
       .each(scrollIntoViewIfNeeded)
@@ -61,9 +69,9 @@ export default function lookupMultiple(node, state){
          : true
   }
 
-  function updateQuery(d, i, el) {
-    if (state.query == el.textContent) return
-    state.query = el.textContent 
+  function updateQuery() {
+    if (state.query == this.textContent) return
+    state.query = this.textContent 
     state.suggestion = 0
     updateRegex()
     o.draw()
@@ -81,73 +89,42 @@ export default function lookupMultiple(node, state){
     )
   }
 
-  function backspaceLozenge(d, i, el, e) {
-    const { anchorOffset, focusOffset } = root.getSelection()
-    if (e.key == 'Backspace'
-    && ((!anchorOffset && !focusOffset) || 
-        (anchorOffset == 1 && focusOffset == 1 && !query))) { // firefox 48 bug
-      o.emit('deselect', state.value.pop())
-       .emit('change')
-       .draw()
-    }
+  function clear() {
+    delete state.value
+    delete state.default
+    o.emit('change').draw()
   }
 
-  // function refocus() {
-  //   const input = o('.textinput').node()
-  //       , range = document.createRange()
-  //       , sel = root.getSelection()
-
-  //   input.focus()
-  //   range.selectNodeContents(input)
-  //   range.collapse(false)
-  //   sel.removeAllRanges()
-  //   sel.addRange(range)
-  // }
-
-  function focus(d) {
+  function focus() {
     if (focused) return
     state.focused = true
     o.draw()
   }
-  
-  function blur(d, i, el, e) {
+
+  function blur(e) {
     if (!focused || e.relatedTarget == host) return focus()
     state.focused = false
     o.emit('blur').draw()
   }
 
-  function toggleOption(d) {
-    let event 
-
-    is.in(value)(d)
-      ? (value.splice(value.indexOf(d), 1), event = 'deselect')
-      : (value.push(d), event = 'select')
-
+  function selectOption(e, d) {
+    state.value = d
     state.query = ''
     updateRegex()
-    o.emit(event, d)
-     .emit('change')
+    o.emit('change')
      .draw()
   }
 
-  function changeSuggestion(d) {
+  function changeSuggestion(e, d) {
     state.suggestion = state.visible.indexOf(d)
     o.draw()
-  }
-
-  function removeTag(d) {
-    var i = value.indexOf(d)
-    value.splice(i, 1)
-    o.emit('deselect', d)
-     .emit('change')
-     .draw()
   }
 
   function fuzzy(d, i) {
     return val(d).replace(state.regex, highlight)
   }
 
-  function shortcuts(d, i, el, e) {
+  function shortcuts(e) {
     const len = state.visible.length
     switch(e.key) {
       case 'Down':
@@ -169,7 +146,7 @@ export default function lookupMultiple(node, state){
       case 'Enter':
         e.preventDefault()
         if (is.def(state.suggestion)) {
-          toggleOption(state.visible[state.suggestion])
+          selectOption(0, state.visible[state.suggestion])
           o.draw()
         }
         break
@@ -205,4 +182,4 @@ export default function lookupMultiple(node, state){
     if (top < ptop) parent.scrollTop = top
     if (bottom > pbottom) parent.scrollTop = bottom - pheight
   }  
-}
+})

@@ -1,42 +1,29 @@
 {
   "name": "d3-chosen",
   "version": "1.1.0",
-  "main": "dist/resources",
+  "main": "index",
   "author": "Pedram Emrouznejad (https://github.com/pemrouz)",
   "license": "pemrouz.mit-license.org",
+  "browser": {
+    "lookup-multiple": "./lookup-multiple/lookup-multiple",
+    "lookup-single": "./lookup-single/lookup-single"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pemrouz/d3-chosen.git"
   },
   "scripts": {
-    "bundle": "browserify . -o dist/client.js -s chosen",
-    "gzip": "gzip -c dist/client.min.js > dist/client.min.js.gz",
-    "minify": "uglifyjs dist/client.js -m -c keep_fargs=false -o dist/client.min.js --screw-ie8",
-    "babel": "babel src -d dist --copy-files",
-    "clean": "rm -rf dist && mkdir dist",
-    "export": "sh -c 'rijs.export'",
-    "build": "npm run clean && npm run babel && npm run export && npm run bundle && npm run minify && npm run gzip",
-    "test": "popper",
-    "test-node": "tap dist/**/test.js",
-    "coverage": "tap dist/**/test.js --cov --coverage-report=lcov",
-    "version": "npm run build && git add -A",
+    "test": "node ./lookup-multiple/lookup-multiple.test && node ./lookup-single/lookup-single.test",
+    "version": "git add -A",
     "postversion": "git push && git push --tags"
   },
+  "dependencies": {
+    "@compone/define": "^1.1.5",
+    "@compone/style": "^1.0.0",
+    "utilise": "^2.3.2"
+  },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babelify": "^8.0.0",
-    "browserenv": "^1.0.0",
-    "browserify": "^14.5.0",
-    "cssscope": "^0.1.0",
-    "html-differ": "^1.3.4",
-    "popper": "^1.0.0",
-    "rijs.export": "0.0.9",
-    "tap": "^6.3.2",
-    "tape": "^4.8.0",
-    "tapify": "0.0.1",
-    "uglifyjs": "^2.4.11",
-    "utilise": "*",
-    "utilise.filify": "*"
+    "spawn-client": "^1.0.1",
+    "tap": "^11.1.4"
   }
 }
